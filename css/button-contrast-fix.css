@@ -1,0 +1,6 @@
+/* Fix for btn-secondary hover contrast in hero sections */
+.hero .btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.3); /* Increased opacity for better contrast */
+  color: #ffffff; /* Ensure text is white for better visibility */
+  border-color: #ffffff; /* Keep border white */
+}

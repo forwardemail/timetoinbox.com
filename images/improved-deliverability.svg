@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+ <style>
+ .primary { fill: #1e88e5; }
+ .secondary { fill: #2ecc71; }
+ </style>
+ <circle cx="40" cy="40" r="36" fill="#F5F7FA" stroke="#E2E8F0" stroke-width="2"/>
+ <path class="primary" d="M25 25H55V55H25V25Z"/>
+ <path fill="white" d="M30 30H50V50H30V30Z"/>
+ <path class="secondary" d="M35 40L40 45L50 35" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+ <path class="primary" d="M20 45L15 50M60 45L65 50M20 35L15 30M60 35L65 30" stroke-width="3" stroke-linecap="round"/>
+</svg>

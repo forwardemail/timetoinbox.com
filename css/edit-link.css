@@ -1,0 +1,36 @@
+/* Edit this page link styles */
+.edit-link {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 10px;
+  color: var(--footer-link-color);
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.edit-link:hover {
+  color: var(--footer-link-hover);
+}
+
+.edit-link svg {
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  fill: currentColor;
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+@media (max-width: 768px) {
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

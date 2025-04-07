@@ -1,0 +1,4 @@
+/* Fix for hero paragraph text color */
+.hero p {
+  color: #ffffff !important; /* Ensure white text in hero sections */
+}

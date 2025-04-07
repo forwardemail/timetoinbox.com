@@ -1,0 +1,155 @@
+/* Light Mode Contrast Fixes */
+
+/* Improve contrast in light mode for all landing pages */
+:root {
+  /* Darker text colors for better contrast */
+  --text-color: #1a202c;
+  --heading-color: #1a202c;
+  --footer-text-color: #1a202c;
+  --footer-link-color: #2563eb;
+  --footer-link-hover: #1e40af;
+  
+  /* Slightly darker background for footer */
+  --footer-bg-color: #e2e8f0;
+  
+  /* Improved contrast for links */
+  --link-color: #2563eb;
+  --link-hover-color: #1e40af;
+  
+  /* Better contrast for buttons */
+  --btn-primary-bg: #2563eb;
+  --btn-primary-hover: #1e40af;
+  
+  /* Better contrast for cards and sections */
+  --light-bg: #edf2f7;
+  --card-bg: #ffffff;
+  --border-color: #cbd5e0;
+}
+
+/* Footer specific improvements for light mode */
+footer {
+  color: var(--footer-text-color);
+}
+
+footer h2, 
+footer h3, 
+footer h4 {
+  color: var(--heading-color);
+}
+
+footer p {
+  color: var(--footer-text-color);
+}
+
+footer a {
+  color: var(--footer-link-color);
+  font-weight: 500;
+}
+
+footer a:hover {
+  color: var(--footer-link-hover);
+}
+
+.footer-content,
+.footer-links,
+.footer-bottom {
+  color: var(--footer-text-color);
+}
+
+.footer-logo p {
+  color: var(--footer-text-color);
+}
+
+.link-group h3 {
+  color: var(--heading-color);
+  font-weight: 600;
+}
+
+.link-group ul li a {
+  color: var(--footer-link-color);
+}
+
+.link-group ul li a:hover {
+  color: var(--footer-link-hover);
+}
+
+/* Testimonial improvements for light mode */
+.testimonial {
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.testimonial blockquote {
+  color: var(--text-color);
+}
+
+.testimonial-author,
+cite {
+  color: var(--heading-color) !important;
+  font-weight: 600;
+}
+
+/* Card improvements for light mode */
+.feature-card,
+.benefit-card,
+.solution-card,
+.step,
+.use-case {
+  color: var(--text-color);
+}
+
+.feature-card h3,
+.benefit-card h3,
+.solution-card h3,
+.step h3,
+.use-case h3 {
+  color: var(--heading-color);
+  font-weight: 600;
+}
+
+/* Table improvements for light mode */
+table th {
+  background-color: #e2e8f0;
+  color: var(--heading-color);
+}
+
+table td {
+  color: var(--text-color);
+}
+
+/* Form elements improvements for light mode */
+input, 
+select, 
+textarea {
+  background-color: #ffffff;
+  color: var(--text-color);
+  border-color: #cbd5e0;
+}
+
+label {
+  color: var(--heading-color);
+  font-weight: 500;
+}
+
+/* Button improvements for light mode */
+.btn-primary {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.btn-secondary {
+  color: var(--btn-primary-bg);
+  font-weight: 600;
+  border-color: var(--btn-primary-bg);
+}
+
+/* Navigation improvements for light mode */
+nav ul li a {
+  font-weight: 500;
+}
+
+/* University names improvements for light mode */
+.university-name {
+  color: var(--heading-color);
+  font-weight: 600;
+}

@@ -1,0 +1,38 @@
+/* Mobile menu styles - updated to hide navbar links on mobile without hamburger icon */
+
+@media (max-width: 768px) {
+  header .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 20px; /* Reduced from 15px to 8px for top/bottom padding */
+  }
+  
+  .site-logo {
+    margin-right: auto;
+  }
+  
+  /* Hide navigation links on mobile */
+  nav ul.nav-links {
+    display: none;
+  }
+  
+  /* Keep only the logo visible */
+  .logo {
+    display: block;
+  }
+  
+  /* Improve vertical alignment in header */
+  .header-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60px;
+  }
+  
+  .logo h1, .logo h2 {
+    margin: 0;
+    line-height: 1.2;
+    vertical-align: middle;
+  }
+}

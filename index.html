@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://forwardemail.net">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time to Inbox | Email Deliverability Metrics & Monitoring</title>
+    <meta name="description" content="Optimize your email deliverability with comprehensive Time to Inbox (TTI) metrics. Monitor delivery speed, track inbox placement, and improve email performance.">
+    <meta name="keywords" content="time to inbox, email deliverability, email delivery time, email delivery metrics, inbox placement rate, email delivery monitoring">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/tti-graph.css">
+    <link rel="stylesheet" href="css/github-code.css">
+    <link rel="stylesheet" href="css/seo-optimization.css">
+    <link rel="stylesheet" href="css/shiki-highlighting.css">
+    <link rel="stylesheet" href="css/citations-compact.css">
+    <link rel="stylesheet" href="css/enhanced-navigation.css">
+    <link rel="stylesheet" href="css/light-mode.css">
+    <link rel="stylesheet" href="css/light-mode-optimization.css">
+    <link rel="stylesheet" href="css/global-contrast-fix.css">
+    <link rel="stylesheet" href="css/light-mode-contrast-fix.css">
+    <link rel="stylesheet" href="css/edit-link.css">
+    <link rel="stylesheet" href="css/hero-text-fix.css">
+    <link rel="stylesheet" href="css/mobile-menu.css">
+    <link rel="stylesheet" href="css/mobile-header-fix.css">
+    <link rel="stylesheet" href="css/button-contrast-fix.css">
+    <!-- Favicon -->
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <script src="js/seo-optimization.js" defer></script>
+    <script src="js/script.js" defer></script>
+    <script src="js/shiki/shiki-browser.js" defer></script>
+    <script src="js/tti-chart.js" defer></script>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <h1>TimeToInbox</h1>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#what-is-tti">What is TTI</a></li>
+                    <li><a href="#benefits">Benefits</a></li>
+                    <li><a href="#metrics">Key Metrics</a></li>
+                    <li><a href="#forward-email">Forward Email TTI</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="https://forwardemail.net" class="btn-primary">Try Forward Email</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Optimize Your Email Deliverability with Time to Inbox Metrics</h1>
+                <h2>Measure, monitor, and improve how quickly your emails reach recipient inboxes</h2>
+                <p>Gain insights into email delivery performance and ensure your messages arrive promptly</p>
+                <div class="cta-buttons">
+                    <a href="#what-is-tti" class="btn-primary">Learn About TTI</a>
+                    <a href="#forward-email" class="btn-secondary">See Forward Email's TTI</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="what-is-tti" class="what-is-tti">
+        <div class="container">
+            <h2>What is Time to Inbox (TTI)?</h2>
+            <div class="tti-content">
+                <div class="tti-text">
+                    <p>Time to Inbox (TTI) is a critical email deliverability metric that measures the time it takes for an email to travel from the sender's server to the recipient's inbox. This metric provides valuable insights into email delivery performance and can help identify potential deliverability issues.</p>
+
+                    <p>According to Postmark, a leading email service provider, "Time to Inbox is the length of time it takes from when an email is sent from a client until it is logged as delivered." <sup><a href="#citations">[1]</a></sup></p>
+
+                    <p>Unlike other email metrics that focus on recipient engagement (opens, clicks), TTI focuses on the technical aspects of email delivery, helping you understand if your emails are being delivered promptly or experiencing delays in the delivery pipeline.</p>
+
+                    <h3>Why TTI Matters</h3>
+                    <p>In today's fast-paced digital environment, the timing of email delivery can significantly impact the effectiveness of your email communications:</p>
+
+                    <ul>
+                        <li><strong>Time-sensitive communications</strong> like password resets, verification codes, and urgent notifications need to arrive quickly</li>
+                        <li><strong>Marketing campaigns</strong> timed for specific events lose effectiveness if delayed</li>
+                        <li><strong>Transactional emails</strong> such as order confirmations and receipts should arrive promptly to reduce customer anxiety</li>
+                        <li><strong>System notifications</strong> for critical events need immediate delivery to enable timely responses</li>
+                    </ul>
+                </div>
+                <div class="tti-image">
+                    <img src="images/tti-diagram.svg" alt="Forward Email service illustration">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="benefits" class="benefits">
+        <div class="container">
+            <h2>Benefits of Monitoring Time to Inbox</h2>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="icon"><img src="images/improved-deliverability.svg" alt="Forward Email service illustration"></div>
+                    <h3>Improved Deliverability</h3>
+                    <p>Identify and resolve delivery bottlenecks to ensure emails reach inboxes faster and more reliably.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="icon"><img src="images/enhanced-user-experience.svg" alt="Forward Email service illustration"></div>
+                    <h3>Enhanced User Experience</h3>
+                    <p>Provide a better experience for recipients by ensuring time-sensitive communications arrive promptly.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="icon"><img src="images/increased-engagement.svg" alt="Forward Email service illustration"></div>
+                    <h3>Increased Engagement</h3>
+                    <p>Improve open and click-through rates by delivering emails when recipients are most likely to engage.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="icon"><img src="images/provider-comparison.svg" alt="Forward Email service illustration"></div>
+                    <h3>Provider Comparison</h3>
+                    <p>Compare email service providers based on actual delivery performance to make informed decisions.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="icon"><img src="images/issue-detection.svg" alt="Forward Email service illustration"></div>
+                    <h3>Early Issue Detection</h3>
+                    <p>Detect delivery problems before they impact your communication strategy or business operations.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="icon"><img src="images/performance-optimization.svg" alt="Forward Email service illustration"></div>
+                    <h3>Performance Optimization</h3>
+                    <p>Fine-tune your email infrastructure and sending practices based on concrete delivery metrics.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="metrics" class="metrics">
+        <div class="container">
+            <h2>Key Email Deliverability Metrics</h2>
+            <div class="metrics-content">
+                <div class="metrics-text">
+                    <p>While Time to Inbox (TTI) is a crucial metric for measuring email delivery performance, it's part of a broader set of deliverability metrics that provide a comprehensive view of your email program's health:</p>
+                </div>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <h3>Time to Inbox (TTI)</h3>
+                        <p>The time it takes for an email to travel from the sender's server to the recipient's inbox, measured in seconds or milliseconds.</p>
+                        <div class="metric-importance">
+                            <span class="label">Importance:</span>
+                            <span class="rating">★★★★★</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Inbox Placement Rate</h3>
+                        <p>The percentage of emails that successfully reach recipients' inboxes rather than spam folders or being blocked entirely.</p>
+                        <div class="metric-importance">
+                            <span class="label">Importance:</span>
+                            <span class="rating">★★★★★</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Delivery Rate</h3>
+                        <p>The percentage of emails that were successfully delivered to recipients' mail servers (not necessarily inboxes).</p>
+                        <div class="metric-importance">
+                            <span class="label">Importance:</span>
+                            <span class="rating">★★★★☆</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Bounce Rate</h3>
+                        <p>The percentage of emails that were rejected by recipient mail servers, including both hard and soft bounces.</p>
+                        <div class="metric-importance">
+                            <span class="label">Importance:</span>
+                            <span class="rating">★★★★☆</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Spam Complaint Rate</h3>
+                        <p>The percentage of delivered emails that recipients mark as spam, a critical factor affecting sender reputation.</p>
+                        <div class="metric-importance">
+                            <span class="label">Importance:</span>
+                            <span class="rating">★★★★★</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Open Rate</h3>
+                        <p>The percentage of delivered emails that recipients open, providing insight into subject line effectiveness and inbox placement.</p>
+                        <div class="metric-importance">
+                            <span class="label">Importance:</span>
+                            <span class="rating">★★★☆☆</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="forward-email" class="forward-email">
+        <div class="container">
+            <h2>Forward Email's Time to Inbox Performance</h2>
+            <div class="forward-email-content">
+                <div class="forward-email-text">
+                    <p>Forward Email is committed to transparency in email deliverability, providing real-time Time to Inbox (TTI) metrics that demonstrate their exceptional delivery performance. As the only email service with 100% open-source and transparent monitoring, Forward Email sets the standard for deliverability transparency. <sup><a href="#citations">[2]</a></sup></p>
+
+                    <h3>Industry-Leading Delivery Times</h3>
+                    <p>Forward Email continuously monitors how long it takes for emails sent through their service to be delivered to test inboxes at major email service providers. Their engineering team is automatically alerted if any delivery times exceed 10 seconds, ensuring consistent performance.</p>
+
+                    <p>Current Time to Inbox metrics for Forward Email based on their monitoring data:</p>
+                </div>
+                <div class="tti-comparison-graph">
+                    <h3>Email Service Provider TTI Comparison</h3>
+                    <div class="tti-graph">
+                        <div class="tti-graph-row">
+                            <div class="tti-provider">Forward Email</div>
+                            <div class="tti-bar-container">
+                                <div class="tti-bar highlight" style="width: 20%;">
+                                    <span class="tti-value">1.6s - 1.7s</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tti-graph-row">
+                            <div class="tti-provider">Postmark</div>
+                            <div class="tti-bar-container">
+                                <div class="tti-bar medium" style="width: 40%;">
+                                    <span class="tti-value">11.96s - 23.23s</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tti-graph-row">
+                            <div class="tti-provider">SendGrid</div>
+                            <div class="tti-bar-container">
+                                <div class="tti-bar slow" style="width: 61%;">
+                                    <span class="tti-value">Inbox placement: 61.0%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tti-graph-row">
+                            <div class="tti-provider">Mailgun</div>
+                            <div class="tti-bar-container">
+                                <div class="tti-bar medium" style="width: 71%;">
+                                    <span class="tti-value">Inbox placement: 71.4%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tti-graph-row">
+                            <div class="tti-provider">Amazon SES</div>
+                            <div class="tti-bar-container">
+                                <div class="tti-bar medium" style="width: 77%;">
+                                    <span class="tti-value">Inbox placement: 77.1%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tti-legend">
+                        <span>Faster delivery / Better placement →</span>
+                    </div>
+                    <div class="tti-note">
+                        <p>Data sources: Forward Email Monitoring, Postmark TTI Monitoring, and Mailtrap Research. See citations below for details.</p>
+                    </div>
+                </div>
+                <div class="forward-email-note">
+                    <p><strong>Did you know?</strong> Forward Email is the only email service with 100% open-source and transparent monitoring. Source code is <a href="https://github.com/forwardemail">available on GitHub</a>.</p>
+                </div>
+
+                <div class="github-code-section">
+                    <div class="github-code-header">
+                        <h3>Forward Email's TTI Monitoring Code</h3>
+                        <a href="https://github.com/forwardemail/forwardemail.net" class="github-repo-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path fill="#0366d6" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+                            forwardemail/forwardemail.net
+                        </a>
+                    </div>
+                    <div class="code-container">
+                        <pre class="shiki-code" data-language="javascript"><code>// TTI monitoring implementation from Forward Email's codebase
+const ms = require('ms');
+const Axe = require('axe');
+const dayjs = require('dayjs');
+const imap = require('imap');
+
+class TTIMonitor {
+  constructor(options = {}) {
+    this.options = options;
+    this.axe = new Axe({
+      logger: options.logger
+    });
+    this.alertThreshold = ms('10s');
+  }
+
+  async measureTTI(provider, mode = 'direct') {
+    const startTime = Date.now();
+    const testId = generateUniqueId();
+
+    // Send test email with unique ID
+    await this.sendTestEmail(testId, provider, mode);
+
+    // Poll inbox until email is found or timeout
+    const deliveryTime = await this.pollInbox(testId, provider);
+
+    // Calculate TTI
+    const tti = deliveryTime - startTime;
+
+    // Alert if TTI exceeds threshold
+    if (tti > this.alertThreshold) {
+      await this.sendAlert(provider, mode, tti);
+    }
+
+    return {
+      provider,
+      mode,
+      tti,
+      timestamp: dayjs().format()
+    };
+  }
+}</code></pre>
+                    </div>
+                    <div class="github-code-footer">
+                        <p>This is a simplified version of Forward Email's TTI monitoring code. The full implementation is available in their <a href="https://github.com/forwardemail/forwardemail.net" target="_blank">GitHub repository</a>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="comparison">
+        <div class="container">
+            <h2>Email Service Provider TTI Comparison</h2>
+            <div class="comparison-content">
+                <div class="comparison-intro">
+                    <p>When choosing an email service provider, Time to Inbox performance is a critical factor that directly impacts the effectiveness of your communications. Below is a comparison of average TTI metrics across popular email service providers based on published data:</p>
+                </div>
+                <div class="comparison-table-container">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Email Service Provider</th>
+                                <th>Average TTI</th>
+                                <th>Data Source</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="highlight">
+                                <td>Forward Email</td>
+                                <td>1.6s - 1.7s</td>
+                                <td>Forward Email Monitoring <sup><a href="#citations">[2]</a></sup></td>
+                            </tr>
+                            <tr>
+                                <td>Postmark</td>
+                                <td>11.96s - 23.23s</td>
+                                <td>Postmark TTI Monitoring <sup><a href="#citations">[1]</a></sup></td>
+                            </tr>
+                            <tr>
+                                <td>SendGrid</td>
+                                <td>Inbox placement: 61.0%</td>
+                                <td>Mailtrap Research <sup><a href="#citations">[3]</a></sup></td>
+                            </tr>
+                            <tr>
+                                <td>Mailgun</td>
+                                <td>Inbox placement: 71.4%</td>
+                                <td>Mailtrap Research <sup><a href="#citations">[3]</a></sup></td>
+                            </tr>
+                            <tr>
+                                <td>Amazon SES</td>
+                                <td>Inbox placement: 77.1%</td>
+                                <td>Mailtrap Research <sup><a href="#citations">[3]</a></sup></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="comparison-note">
+                    <p>Note: TTI measurements can vary based on testing methodology, recipient email providers, and network conditions. The data above represents published metrics from each provider's own monitoring or independent research.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="factors">
+        <div class="container">
+            <h2>Factors Affecting Time to Inbox</h2>
+            <div class="factors-grid">
+                <div class="factor-card">
+                    <h3>Sender Reputation</h3>
+                    <p>Your sender reputation significantly impacts how quickly emails are processed. Email service providers prioritize delivery from senders with established positive reputations.</p>
+                    <p>According to Mailtrap research, email service providers only account for about 30% of your email deliverability, with sender practices making up the rest. <sup><a href="#citations">[3]</a></sup></p>
+                </div>
+                <div class="factor-card">
+                    <h3>Infrastructure Quality</h3>
+                    <p>The quality and configuration of your email infrastructure, including servers, IP addresses, and authentication protocols (SPF, DKIM, DMARC), directly affect delivery speed.</p>
+                </div>
+                <div class="factor-card">
+                    <h3>Email Volume</h3>
+                    <p>Sending large volumes of email simultaneously can trigger rate limiting or throttling by recipient servers, increasing delivery time.</p>
+                </div>
+                <div class="factor-card">
+                    <h3>Content Quality</h3>
+                    <p>Emails with spam-like content, excessive images, or poor HTML structure may undergo additional filtering, delaying inbox placement.</p>
+                </div>
+                <div class="factor-card">
+                    <h3>Recipient Provider</h3>
+                    <p>Different email providers implement varying levels of filtering and processing. Gmail, Outlook, Yahoo, and others each have unique delivery characteristics.</p>
+                </div>
+                <div class="factor-card">
+                    <h3>Authentication Status</h3>
+                    <p>Properly authenticated emails with valid SPF, DKIM, and DMARC records typically experience faster delivery times than unauthenticated messages.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="implementation">
+        <div class="container">
+            <h2>Implementing TTI Monitoring</h2>
+            <div class="implementation-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Set Up Seed Addresses</h3>
+                        <p>Create test email accounts across major providers (Gmail, Outlook, Yahoo, etc.) to serve as monitoring endpoints.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Implement Tracking</h3>
+                        <p>Add unique identifiers to test emails and implement server-side logging to record send and delivery timestamps.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Establish Baselines</h3>
+                        <p>Collect initial data to establish baseline TTI metrics for different recipient providers and message types.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Set Up Alerts</h3>
+                        <p>Configure alerting thresholds to notify your team when TTI exceeds acceptable limits.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h3>Regular Testing</h3>
+                        <p>Schedule regular test sends to continuously monitor TTI performance and detect trends or issues.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="implementation-note">
+                <p>Forward Email handles TTI monitoring automatically for all customers, with transparent reporting and proactive alerts if delivery times exceed thresholds.</p>
+                <a href="https://forwardemail.net" class="btn-primary">Learn More About Forward Email</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="use-cases">
+        <div class="container">
+            <h2>TTI Optimization Use Cases</h2>
+            <div class="use-cases-grid">
+                <div class="use-case">
+                    <h3>Password Reset Emails</h3>
+                    <p>Users waiting for password reset links expect near-instant delivery. Optimizing TTI ensures users can quickly regain access to their accounts without frustration.</p>
+                </div>
+                <div class="use-case">
+                    <h3>Time-Sensitive Notifications</h3>
+                    <p>Alerts about security incidents, system outages, or critical updates need to reach recipients promptly to enable timely action.</p>
+                </div>
+                <div class="use-case">
+                    <h3>Transactional Confirmations</h3>
+                    <p>Order confirmations, shipping notifications, and payment receipts should arrive quickly to reduce customer anxiety and support inquiries.</p>
+                </div>
+                <div class="use-case">
+                    <h3>Two-Factor Authentication</h3>
+                    <p>Authentication codes sent via email must arrive within seconds to provide a seamless login experience without disrupting the user's workflow.</p>
+                </div>
+                <div class="use-case">
+                    <h3>Event Reminders</h3>
+                    <p>Reminders for upcoming events or appointments should arrive with sufficient lead time to allow recipients to prepare or reschedule if necessary.</p>
+                </div>
+                <div class="use-case">
+                    <h3>System Monitoring Alerts</h3>
+                    <p>IT teams rely on prompt delivery of system alerts to address issues before they impact users or business operations.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2>Ready to Optimize Your Email Delivery?</h2>
+            <p>Forward Email provides industry-leading Time to Inbox performance with transparent monitoring and reporting. Experience the difference that fast, reliable email delivery can make for your business.</p>
+            <div class="contact-buttons">
+                <a href="https://forwardemail.net" class="btn-primary">Get Started with Forward Email</a>
+                <a href="https://forwardemail.net/faq" class="btn-secondary">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="citations" class="citations-compact">
+        <div class="container">
+            <h3>Citations & References</h3>
+            <ol>
+                <li id="citation-1">Postmark. (2025). <em>Time to Inbox</em>. Retrieved April 6, 2025, from <a href="https://tti.postmarkapp.com/" target="_blank">https://tti.postmarkapp.com/</a></li>
+                <li id="citation-2">Forward Email. (2025). <em>Time to Inbox</em>. Retrieved April 6, 2025, from Forward Email's Time to Inbox monitoring page.</li>
+                <li id="citation-3">Bostogannashvili, K., Kaitaz, D., & Hurchenko, Y. (2025, January 6). <em>Email Deliverability Comparison Results [2025]</em>. Mailtrap. Retrieved April 6, 2025, from <a href="https://mailtrap.io/blog/email-deliverability-comparison/" target="_blank">https://mailtrap.io/blog/email-deliverability-comparison/</a></li>
+            </ol>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>TimeToInbox</h2>
+                    <p>Optimizing email deliverability through accurate Time to Inbox metrics.</p>
+                    <p>Powered by <a href="https://forwardemail.net">Forward Email</a></p>
+                </div>
+                <div class="footer-links">
+                    <div class="link-group">
+                        <h3>Resources</h3>
+                        <ul>
+                            <li><a href="#what-is-tti">What is TTI</a></li>
+                            <li><a href="#benefits">Benefits</a></li>
+                            <li><a href="#metrics">Key Metrics</a></li>
+                            <li><a href="#forward-email">Forward Email TTI</a></li>
+                        </ul>
+                    </div>
+                    <div class="link-group">
+                        <h3>Forward Email</h3>
+                        <ul>
+                            <li><a href="https://forwardemail.net">Homepage</a></li>
+                            <li><a href="https://forwardemail.net/pricing">Pricing</a></li>
+                            <li><a href="https://forwardemail.net/faq">FAQ</a></li>
+                            <li><a href="https://forwardemail.net/guides">Guides</a></li>
+                        </ul>
+                    </div>
+                    <div class="link-group">
+                        <h3>Related Sites</h3>
+                        <ul>
+                            <li><a href="https://alumniemail.com">AlumniEmail.com</a></li>
+                            <li><a href="https://serverauditing.com">ServerAuditing.com</a></li>
+                            <li><a href="https://sshmonitor.com">SSHMonitor.com</a></li>
+                            <li><a href="https://sslmonitor.com">SSLMonitor.com</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 TimeToInbox. All rights reserved.</p>
+                <a href="https://github.com/forwardemail/timetoinbox.com" class="edit-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                    Edit this page
+                </a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

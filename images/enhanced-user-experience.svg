@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+ <style>
+ .primary { fill: #1e88e5; }
+ .secondary { fill: #2ecc71; }
+ .tertiary { fill: #f39c12; }
+ </style>
+ <circle cx="40" cy="40" r="36" fill="#F5F7FA" stroke="#E2E8F0" stroke-width="2"/>
+ <circle cx="40" cy="30" r="10" class="primary"/>
+ <path d="M25 60C25 51.7157 31.7157 45 40 45C48.2843 45 55 51.7157 55 60" class="primary" stroke-width="3" stroke-linecap="round"/>
+ <path class="tertiary" d="M60 30L65 25M60 35L65 40M20 30L15 25M20 35L15 40" stroke-width="2" stroke-linecap="round"/>
+ <path class="secondary" d="M40 30L40 25M45 30L50 25M35 30L30 25" stroke-width="2" stroke-linecap="round"/>
+ <path fill="white" d="M37 28H43V32H37V28Z"/>
+</svg>

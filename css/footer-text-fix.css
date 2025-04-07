@@ -1,0 +1,11 @@
+/* Footer h2 dark color fix */
+footer h2 {
+  color: #2c3e50 !important; /* Dark color instead of white */
+  text-shadow: none !important; /* Remove text shadow */
+  font-weight: 600; /* Make it slightly bolder for better visibility */
+}
+
+/* Dark mode compatibility */
+[data-theme=dark] footer h2 {
+  color: #e2e8f0 !important; /* Lighter color for dark mode */
+}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+ <style>
+ .primary { fill: #1e88e5; }
+ .secondary { fill: #2ecc71; }
+ .tertiary { fill: #f39c12; }
+ </style>
+ <circle cx="40" cy="40" r="36" fill="#F5F7FA" stroke="#E2E8F0" stroke-width="2"/>
+ <rect x="15" y="25" width="20" height="30" rx="2" class="primary" opacity="0.9"/>
+ <rect x="45" y="25" width="20" height="30" rx="2" class="secondary" opacity="0.9"/>
+ <path d="M35 40H45M35 35H45M35 45H45M35 50H45" stroke="#4A5568" stroke-width="2" stroke-linecap="round"/>
+ <path d="M20 32H30M20 37H30M20 42H30" stroke="white" stroke-width="2" stroke-linecap="round"/>
+ <path d="M50 32H60M50 37H60M50 42H60" stroke="white" stroke-width="2" stroke-linecap="round"/>
+ <path class="tertiary" d="M25 60L40 55L55 60" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+ <circle cx="25" cy="60" r="3" class="tertiary"/>
+ <circle cx="40" cy="55" r="3" class="tertiary"/>
+ <circle cx="55" cy="60" r="3" class="tertiary"/>
+</svg>
