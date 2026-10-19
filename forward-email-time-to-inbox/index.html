@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How Forward Email Measures Time to Inbox (TTI)</title>
+  <meta name="description" content="How the public Forward Email TTI monitor times test emails sent to Gmail, Apple iCloud, Yahoo/AOL and its own mailboxes.">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://timetoinbox.com/forward-email-time-to-inbox/">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="theme-color" content="#1a365d">
+  <meta name="color-scheme" content="light">
+  <meta name="author" content="Forward Email">
+  <link rel="stylesheet" href="/css/site.min.css">
+  <link rel="icon" href="/favicon.ico" sizes="48x48 32x32 16x16">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="alternate" type="text/markdown" href="/forward-email-time-to-inbox.md" title="How Forward Email Measures Time to Inbox (Markdown)">
+  <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
+  <link rel="author" href="/about/">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="TimeToInbox">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:title" content="How Forward Email Measures Time to Inbox (TTI)">
+  <meta property="og:description" content="How the public Forward Email TTI monitor times test emails sent to Gmail, Apple iCloud, Yahoo/AOL and its own mailboxes.">
+  <meta property="og:url" content="https://timetoinbox.com/forward-email-time-to-inbox/">
+  <meta property="og:image" content="https://timetoinbox.com/og-image.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="TimeToInbox: how long email takes to reach the inbox, and how to measure it">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How Forward Email Measures Time to Inbox (TTI)">
+  <meta name="twitter:description" content="How the public Forward Email TTI monitor times test emails sent to Gmail, Apple iCloud, Yahoo/AOL and its own mailboxes.">
+  <meta name="twitter:image" content="https://timetoinbox.com/og-image.png">
+  <meta name="twitter:image:alt" content="TimeToInbox: how long email takes to reach the inbox, and how to measure it">
+  <script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://forwardemail.net/#organization","name":"Forward Email","url":"https://forwardemail.net","logo":"https://forwardemail.net/img/logo-square-180x180.png","sameAs":["https://github.com/forwardemail","https://x.com/fwdemail","https://www.youtube.com/forwardemail","https://www.reddit.com/r/forwardemail/"],"contactPoint":[{"@type":"ContactPoint","contactType":"customer support","email":"support@forwardemail.net","url":"https://forwardemail.net/en/faq"},{"@type":"ContactPoint","contactType":"security","email":"security@forwardemail.net","url":"https://forwardemail.net/en/security"}]},{"@type":"WebSite","@id":"https://timetoinbox.com/#website","url":"https://timetoinbox.com/","name":"TimeToInbox","alternateName":"Time to Inbox","description":"TimeToInbox explains time to inbox (TTI), the time from sending an email to its arrival in the recipient's inbox: what it measures, how to measure it yourself, what slows delivery down, and how Forward Email publishes its own TTI measurements and the public source code behind them.","inLanguage":"en","publisher":{"@id":"https://forwardemail.net/#organization"}},{"@type":"WebPage","@id":"https://timetoinbox.com/forward-email-time-to-inbox/#webpage","url":"https://timetoinbox.com/forward-email-time-to-inbox/","name":"How Forward Email Measures Time to Inbox","headline":"How Forward Email Measures Time to Inbox","description":"Forward Email publishes live delivery times to mailboxes at major email providers, and the code that measures them is public on GitHub. This page explains what that code does, step by step.","inLanguage":"en","isPartOf":{"@id":"https://timetoinbox.com/#website"},"publisher":{"@id":"https://forwardemail.net/#organization"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://timetoinbox.com/og-image.png","width":1200,"height":630},"about":[{"@type":"Thing","name":"Time to inbox monitoring"},{"@id":"https://forwardemail.net/#organization"}],"breadcrumb":{"@id":"https://timetoinbox.com/forward-email-time-to-inbox/#breadcrumb"}},{"@type":"BreadcrumbList","@id":"https://timetoinbox.com/forward-email-time-to-inbox/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://timetoinbox.com/"},{"@type":"ListItem","position":2,"name":"Forward Email TTI","item":"https://timetoinbox.com/forward-email-time-to-inbox/"}]}]}
+  </script>
+</head>
+<body>
+  <!--email_off--><a class="skip-link" href="#main"><!--/email_off-->Skip to content</a>
+  <header class="site-header">
+    <div class="container header-content">
+      <!--email_off--><a class="logo" href="/"><!--/email_off--><img src="/icon.svg" alt="" width="44" height="44" fetchpriority="high"><span>TimeToInbox</span></a>
+      <nav aria-label="Main">
+        <ul class="nav-links">
+          <li><!--email_off--><a href="/what-is-time-to-inbox/"><!--/email_off-->What is TTI</a></li>
+          <li><!--email_off--><a href="/how-to-measure-time-to-inbox/"><!--/email_off-->Measure TTI</a></li>
+          <li><!--email_off--><a href="/what-affects-email-delivery-speed/"><!--/email_off-->Speed factors</a></li>
+          <li><!--email_off--><a href="/forward-email-time-to-inbox/" aria-current="page"><!--/email_off-->Forward Email TTI</a></li>
+          <li><!--email_off--><a href="/faq/"><!--/email_off-->FAQ</a></li>
+          <li><!--email_off--><a href="/about/"><!--/email_off-->About</a></li>
+          <li><!--email_off--><a class="btn btn-primary nav-cta" href="https://forwardemail.net"><!--/email_off-->Try Forward Email</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="hero hero-inner">
+      <div class="container hero-content">
+        <nav class="breadcrumb" aria-label="Breadcrumb"><ol><li><!--email_off--><a href="/"><!--/email_off-->Home</a></li><li><span aria-current="page">Forward Email TTI</span></li></ol></nav>
+        <h1>How Forward Email Measures Time to Inbox</h1>
+        <p class="lead">Forward Email publishes live delivery times to mailboxes at major email providers, and the code that measures them is public on GitHub. This page explains what that code does, step by step.</p>
+        <div class="cta-buttons"><!--email_off--><a class="btn btn-primary" href="https://forwardemail.net/tti"><!--/email_off-->Open the live TTI page</a><!--email_off--><a class="btn btn-secondary" href="https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js"><!--/email_off-->Read jobs/tti.js</a></div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container narrow prose">
+        <h2 id="summary">How the monitor works in short</h2>
+        <p class="answer">Forward Email's monitor sends two test emails to a mailbox at each tested provider, one directly and one through a forwarding address, and records how many milliseconds pass until each message shows up over IMAP. The latest results and a 24-hour chart are on the <!--email_off--><a href="https://forwardemail.net/tti"><!--/email_off-->Forward Email time to inbox page</a>.</p>
+        <p>Forward Email describes it on that page as "our own open-source monitor" that "sends test emails to inboxes at major email providers and records how long each one takes to arrive," and adds that its engineers "get an alert when a delivery takes longer than 10 seconds."</p>
+        <p>The numbers change every few minutes, so this site does not copy them. Open the live page for current values.</p>
+
+        <h2 id="providers">Which providers are tested</h2>
+        <p>The monitor's configuration (<!--email_off--><a href="https://github.com/forwardemail/forwardemail.net/blob/master/config/index.js"><!--/email_off-->config/index.js</a>) defines test mailboxes for Forward Email, Gmail, Outlook/Hotmail, Apple iCloud, Fastmail and Yahoo/AOL. A provider is only tested when credentials for its test mailbox are set, and code comments say Outlook and Fastmail were taken out of rotation. The live page lists Forward Email, Gmail, Apple iCloud and Yahoo/AOL.</p>
+
+        <h2 id="how-it-works">How a test run works</h2>
+        <p>The steps below follow <!--email_off--><a href="https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js"><!--/email_off-->jobs/tti.js</a> and <!--email_off--><a href="https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-message.js"><!--/email_off-->helpers/get-message.js</a>.</p>
+        <ol>
+          <li><strong>Decide whether to run.</strong> Every minute the job looks at the latest saved result. If that result is less than 5 minutes old and every provider was under 10 seconds, it waits. Otherwise it takes a lock in Redis so only one server runs the test, and starts a new run.</li>
+          <li><strong>Build two messages per provider.</strong> One goes straight to the provider's test mailbox ("Direct"). The other goes to a forwarding address that delivers into the same mailbox ("Forward"). Each message gets a random Message-ID and random subject and body text.</li>
+          <li><strong>Record the start time and sign.</strong> The job takes the current time, uses it as the Date header, and signs the message with DKIM.</li>
+          <li><strong>Deliver.</strong> The message is sent on port 25 straight to the mail server for the recipient's domain, using the same delivery helper that Forward Email's MX servers use to forward mail. If that fails, the job falls back to Forward Email's own SMTP service.</li>
+          <li><strong>Poll the inbox.</strong> Two IMAP connections per provider stay open, so the direct and forwarded messages can be watched at the same time. The poller sends a NOOP to get fresh mailbox state, reads the Message-ID header of every message in the inbox, and repeats without a pause until it finds the test message or one minute passes.</li>
+          <li><strong>Record the arrival time.</strong> When the message is found, the job takes the current time on its own clock. The code comments explain that provider timestamps, Received headers and the envelope date are not used, because of clock differences between servers.</li>
+          <li><strong>Save and clean up.</strong> The job stores the direct and forwarding times for each provider (a message not found within one minute is stored as 0), then deletes all messages in each test inbox. Saved results expire after 30 days.</li>
+          <li><strong>Alert.</strong> If any provider took 10 seconds or longer, or a message never arrived, the job emails Forward Email's alerts address with every provider's numbers, at most once every 30 minutes.</li>
+        </ol>
+
+        <h2 id="where-published">Where the results are shown</h2>
+        <ul>
+          <li>The <!--email_off--><a href="https://forwardemail.net/tti"><!--/email_off-->time to inbox page</a> shows the latest direct and forwarding time for each provider and a chart of the past 24 hours.</li>
+          <li>The Forward Email home page and pricing page show a summary. That summary uses the most recent result from the past 24 hours in which every provider was under 10 seconds (<!--email_off--><a href="https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-latest-tti.js"><!--/email_off-->helpers/get-latest-tti.js</a>).</li>
+        </ul>
+        <p>Because the home page summary skips runs with a slow provider, the dedicated TTI page is the place to see every recent result.</p>
+
+        <h2 id="read-the-numbers">How to read the numbers</h2>
+        <ul>
+          <li><strong>Direct</strong> is the time from Forward Email's server to the provider's inbox. It reflects how fast that provider accepts and files mail from Forward Email.</li>
+          <li><strong>Forwarding</strong> includes the extra trip through a forwarding address. Compare it with Direct to see what a forward costs for each provider.</li>
+          <li>Times include the full SMTP transaction and the provider's own processing, because the clock runs until the message is visible over IMAP.</li>
+          <li>The numbers describe mail sent by Forward Email's servers. Mail from your own server can be faster or slower, depending on the <!--email_off--><a href="/what-affects-email-delivery-speed/"><!--/email_off-->factors that affect delivery speed</a>.</li>
+        </ul>
+
+        <h2 id="other-published-tti">Other published TTI data</h2>
+        <p>Postmark publishes time to inbox for its own sending on its <!--email_off--><a href="https://tti.postmarkapp.com/"><!--/email_off-->TTI page</a>. In its blog, Postmark says the checks run every five minutes against major mailbox providers (<!--email_off--><a href="https://postmarkapp.com/blog/why-we-removed-inbox-delivery-tests-from-our-status-page"><!--/email_off-->Postmark blog</a>). Postmark and Forward Email measure their own sending with different setups, so their numbers are not a direct comparison.</p>
+
+        <h2 id="run-your-own">Run a similar monitor yourself</h2>
+        <p>The same method works for any sender. See <!--email_off--><a href="/how-to-measure-time-to-inbox/"><!--/email_off-->how to measure time to inbox</a> for a short Node.js example that sends a test message and polls IMAP until it arrives.</p>
+
+        <h2 id="sources">Sources for this page</h2>
+        <ul class="sources">
+          <li><!--email_off--><a href="https://forwardemail.net/tti"><!--/email_off-->Forward Email: Time to Inbox (live results)</a></li>
+          <li><!--email_off--><a href="https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js"><!--/email_off-->forwardemail.net: jobs/tti.js</a></li>
+          <li><!--email_off--><a href="https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-message.js"><!--/email_off-->forwardemail.net: helpers/get-message.js</a></li>
+          <li><!--email_off--><a href="https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-latest-tti.js"><!--/email_off-->forwardemail.net: helpers/get-latest-tti.js</a></li>
+          <li><!--email_off--><a href="https://github.com/forwardemail/forwardemail.net/blob/master/config/index.js"><!--/email_off-->forwardemail.net: config/index.js</a></li>
+          <li><!--email_off--><a href="https://postmarkapp.com/blog/why-we-removed-inbox-delivery-tests-from-our-status-page"><!--/email_off-->Postmark: why we removed inbox delivery tests from our status page</a></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="cta" aria-labelledby="cta">
+      <div class="container">
+        <h2 id="cta">Try the service behind the numbers</h2>
+        <p>Forward Email is open-source email hosting and forwarding. You can start with free forwarding by adding MX and TXT records to your domain, or self-host it with Docker.</p>
+        <div class="cta-buttons">
+          <!--email_off--><a class="btn btn-primary" href="https://forwardemail.net"><!--/email_off-->Get started with Forward Email</a>
+          <!--email_off--><a class="btn btn-secondary" href="https://forwardemail.net/self-hosted"><!--/email_off-->Self-host Forward Email</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-about">
+          <p class="footer-title">TimeToInbox</p>
+          <p>A free guide to time to inbox (TTI) and email delivery speed from the <!--email_off--><a href="https://forwardemail.net"><!--/email_off-->Forward Email</a> team.</p>
+          <p><!--email_off--><a href="/about/"><!--/email_off-->About this site</a> &middot; <!--email_off--><a href="/privacy/"><!--/email_off-->Privacy policy</a></p>
+          <p>Contact: <!--email_off--><a href="https://github.com/forwardemail/timetoinbox.com/issues"><!--/email_off-->GitHub issues</a> &middot; <!--email_off--><a href="mailto:support@forwardemail.net">support@forwardemail.net</a><!--/email_off--></p>
+        </div>
+        <div class="footer-links">
+          <div class="link-group">
+            <p class="footer-title">Guides</p>
+            <ul>
+            <li><!--email_off--><a href="/what-is-time-to-inbox/"><!--/email_off-->What is TTI</a></li>
+            <li><!--email_off--><a href="/how-to-measure-time-to-inbox/"><!--/email_off-->Measure TTI</a></li>
+            <li><!--email_off--><a href="/what-affects-email-delivery-speed/"><!--/email_off-->Speed factors</a></li>
+            <li><!--email_off--><a href="/forward-email-time-to-inbox/"><!--/email_off-->Forward Email TTI</a></li>
+            <li><!--email_off--><a href="/faq/"><!--/email_off-->FAQ</a></li>
+            </ul>
+          </div>
+          <div class="link-group">
+            <p class="footer-title">Forward Email</p>
+            <ul>
+              <li><!--email_off--><a href="https://forwardemail.net"><!--/email_off-->Forward Email home</a></li>
+              <li><!--email_off--><a href="https://forwardemail.net/tti"><!--/email_off-->Live TTI measurements</a></li>
+              <li><!--email_off--><a href="https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js"><!--/email_off-->TTI monitor source code</a></li>
+              <li><!--email_off--><a href="https://forwardemail.net/faq"><!--/email_off-->Forward Email FAQ</a></li>
+              <li><!--email_off--><a href="https://forwardemail.net/private-business-email"><!--/email_off-->Plans and pricing</a></li>
+              <li><!--email_off--><a href="https://github.com/forwardemail"><!--/email_off-->Forward Email on GitHub</a></li>
+              <li><!--email_off--><a href="https://x.com/fwdemail"><!--/email_off-->Forward Email on X</a></li>
+              <li><!--email_off--><a href="https://www.youtube.com/forwardemail"><!--/email_off-->Forward Email on YouTube</a></li>
+            </ul>
+          </div>
+          <div class="link-group">
+            <p class="footer-title">Related sites</p>
+            <ul>
+              <li><!--email_off--><a href="https://alumniemail.com"><!--/email_off-->AlumniEmail.com</a></li>
+              <li><!--email_off--><a href="https://serverauditing.com"><!--/email_off-->ServerAuditing.com</a></li>
+              <li><!--email_off--><a href="https://sshmonitor.com"><!--/email_off-->SSHMonitor.com</a></li>
+              <li><!--email_off--><a href="https://sslmonitor.com"><!--/email_off-->SSLMonitor.com</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>TimeToInbox is run by the Forward Email team. Source code on <!--email_off--><a href="https://github.com/forwardemail/timetoinbox.com"><!--/email_off-->GitHub</a>.</p>
+        <!--email_off--><a class="edit-link" href="https://github.com/forwardemail/timetoinbox.com/blob/main/src/pages/forward-email-time-to-inbox.html"><!--/email_off--><svg aria-hidden="true" focusable="false" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>Edit this page on GitHub</span></a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

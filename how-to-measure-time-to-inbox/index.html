@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to Measure Time to Inbox (TTI) Yourself</title>
+  <meta name="description" content="Measure time to inbox from Received headers, or with seed mailboxes and a script that sends a test email and polls IMAP.">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://timetoinbox.com/how-to-measure-time-to-inbox/">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="theme-color" content="#1a365d">
+  <meta name="color-scheme" content="light">
+  <meta name="author" content="Forward Email">
+  <link rel="stylesheet" href="/css/site.min.css">
+  <link rel="icon" href="/favicon.ico" sizes="48x48 32x32 16x16">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="alternate" type="text/markdown" href="/how-to-measure-time-to-inbox.md" title="How to Measure Time to Inbox (Markdown)">
+  <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
+  <link rel="author" href="/about/">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="TimeToInbox">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:title" content="How to Measure Time to Inbox (TTI) Yourself">
+  <meta property="og:description" content="Measure time to inbox from Received headers, or with seed mailboxes and a script that sends a test email and polls IMAP.">
+  <meta property="og:url" content="https://timetoinbox.com/how-to-measure-time-to-inbox/">
+  <meta property="og:image" content="https://timetoinbox.com/og-image.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="TimeToInbox: how long email takes to reach the inbox, and how to measure it">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How to Measure Time to Inbox (TTI) Yourself">
+  <meta name="twitter:description" content="Measure time to inbox from Received headers, or with seed mailboxes and a script that sends a test email and polls IMAP.">
+  <meta name="twitter:image" content="https://timetoinbox.com/og-image.png">
+  <meta name="twitter:image:alt" content="TimeToInbox: how long email takes to reach the inbox, and how to measure it">
+  <script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://forwardemail.net/#organization","name":"Forward Email","url":"https://forwardemail.net","logo":"https://forwardemail.net/img/logo-square-180x180.png","sameAs":["https://github.com/forwardemail","https://x.com/fwdemail","https://www.youtube.com/forwardemail","https://www.reddit.com/r/forwardemail/"],"contactPoint":[{"@type":"ContactPoint","contactType":"customer support","email":"support@forwardemail.net","url":"https://forwardemail.net/en/faq"},{"@type":"ContactPoint","contactType":"security","email":"security@forwardemail.net","url":"https://forwardemail.net/en/security"}]},{"@type":"WebSite","@id":"https://timetoinbox.com/#website","url":"https://timetoinbox.com/","name":"TimeToInbox","alternateName":"Time to Inbox","description":"TimeToInbox explains time to inbox (TTI), the time from sending an email to its arrival in the recipient's inbox: what it measures, how to measure it yourself, what slows delivery down, and how Forward Email publishes its own TTI measurements and the public source code behind them.","inLanguage":"en","publisher":{"@id":"https://forwardemail.net/#organization"}},{"@type":"WebPage","@id":"https://timetoinbox.com/how-to-measure-time-to-inbox/#webpage","url":"https://timetoinbox.com/how-to-measure-time-to-inbox/","name":"How to Measure Time to Inbox","headline":"How to Measure Time to Inbox","description":"You can check one message by reading its Received headers, or measure TTI continuously with seed mailboxes and a small script that sends a test email and watches the inbox over IMAP.","inLanguage":"en","isPartOf":{"@id":"https://timetoinbox.com/#website"},"publisher":{"@id":"https://forwardemail.net/#organization"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://timetoinbox.com/og-image.png","width":1200,"height":630},"breadcrumb":{"@id":"https://timetoinbox.com/how-to-measure-time-to-inbox/#breadcrumb"}},{"@type":"BreadcrumbList","@id":"https://timetoinbox.com/how-to-measure-time-to-inbox/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://timetoinbox.com/"},{"@type":"ListItem","position":2,"name":"Measure TTI","item":"https://timetoinbox.com/how-to-measure-time-to-inbox/"}]},{"@type":"HowTo","@id":"https://timetoinbox.com/how-to-measure-time-to-inbox/#howto","name":"Measure time to inbox with seed mailboxes","description":"Send test emails to mailboxes you control at each provider and time how long each one takes to appear over IMAP.","tool":[{"@type":"HowToTool","name":"An SMTP account to send from"},{"@type":"HowToTool","name":"Seed mailboxes with IMAP access"},{"@type":"HowToTool","name":"A script runner such as Node.js and cron"}],"step":[{"@type":"HowToStep","position":1,"name":"Create a seed mailbox at each provider","text":"Open one account per provider you care about and turn on IMAP access. Most providers require an app password for IMAP. Use these accounts only for testing so the script can read and delete everything in them.","url":"https://timetoinbox.com/how-to-measure-time-to-inbox/#step-1"},{"@type":"HowToStep","position":2,"name":"Send from your real sending setup","text":"Send the test through the same server, domain, SPF, DKIM and DMARC setup your real mail uses. A test from a different server measures a different path.","url":"https://timetoinbox.com/how-to-measure-time-to-inbox/#step-2"},{"@type":"HowToStep","position":3,"name":"Give each test message a unique Message-ID","text":"Generate a random Message-ID for every test and record the time just before you send. The ID lets the script find this exact message among older tests.","url":"https://timetoinbox.com/how-to-measure-time-to-inbox/#step-3"},{"@type":"HowToStep","position":4,"name":"Poll the inbox over IMAP","text":"Keep an IMAP connection open, send a NOOP so the server reports new messages, and look for the Message-ID. Record the arrival time when it appears. Stop after a timeout, such as one minute, and count the message as late.","url":"https://timetoinbox.com/how-to-measure-time-to-inbox/#step-4"},{"@type":"HowToStep","position":5,"name":"Use one clock for both timestamps","text":"Take the send time and the arrival time from the machine running the script. Provider timestamps and Received headers come from other clocks and can be off by seconds.","url":"https://timetoinbox.com/how-to-measure-time-to-inbox/#step-5"},{"@type":"HowToStep","position":6,"name":"Repeat on a schedule and alert on outliers","text":"Run the test every few minutes, store the results, and alert when a delivery passes your threshold or never arrives. Delete old test messages so the inbox stays small.","url":"https://timetoinbox.com/how-to-measure-time-to-inbox/#step-6"}]}]}
+  </script>
+</head>
+<body>
+  <!--email_off--><a class="skip-link" href="#main"><!--/email_off-->Skip to content</a>
+  <header class="site-header">
+    <div class="container header-content">
+      <!--email_off--><a class="logo" href="/"><!--/email_off--><img src="/icon.svg" alt="" width="44" height="44" fetchpriority="high"><span>TimeToInbox</span></a>
+      <nav aria-label="Main">
+        <ul class="nav-links">
+          <li><!--email_off--><a href="/what-is-time-to-inbox/"><!--/email_off-->What is TTI</a></li>
+          <li><!--email_off--><a href="/how-to-measure-time-to-inbox/" aria-current="page"><!--/email_off-->Measure TTI</a></li>
+          <li><!--email_off--><a href="/what-affects-email-delivery-speed/"><!--/email_off-->Speed factors</a></li>
+          <li><!--email_off--><a href="/forward-email-time-to-inbox/"><!--/email_off-->Forward Email TTI</a></li>
+          <li><!--email_off--><a href="/faq/"><!--/email_off-->FAQ</a></li>
+          <li><!--email_off--><a href="/about/"><!--/email_off-->About</a></li>
+          <li><!--email_off--><a class="btn btn-primary nav-cta" href="https://forwardemail.net"><!--/email_off-->Try Forward Email</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="hero hero-inner">
+      <div class="container hero-content">
+        <nav class="breadcrumb" aria-label="Breadcrumb"><ol><li><!--email_off--><a href="/"><!--/email_off-->Home</a></li><li><span aria-current="page">Measure TTI</span></li></ol></nav>
+        <h1>How to Measure Time to Inbox</h1>
+        <p class="lead">You can check one message by reading its Received headers, or measure TTI continuously with seed mailboxes and a small script that sends a test email and watches the inbox over IMAP.</p>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container narrow prose">
+        <h2 id="quick-answer">Quick answer</h2>
+        <p class="answer">To measure time to inbox, send a test email with a unique Message-ID to a mailbox you control, poll that mailbox over IMAP until the message appears, and subtract the send time from the arrival time. Take both timestamps from the same clock.</p>
+        <p>For a one-off check of a message you already received, read its Received headers instead. They show when each server along the way handled the message.</p>
+
+        <h2 id="received-headers">Method 1: read the Received headers of one message</h2>
+        <p>Every SMTP server that handles a message adds a <code>Received:</code> line at the top of the headers, with a timestamp (<!--email_off--><a href="https://www.rfc-editor.org/rfc/rfc5321#section-4.4"><!--/email_off-->RFC 5321, section 4.4</a>). Reading them from the bottom up shows the path of the message and the gap between hops.</p>
+        <ol>
+          <li>Open the full headers. In Gmail, open the message menu and choose <strong>Show original</strong>. In Apple Mail, choose <strong>View &rarr; Message &rarr; All Headers</strong>. Most other apps have an option named "View source" or similar.</li>
+          <li>Find the lowest <code>Received:</code> line. That is the first server that accepted the message.</li>
+          <li>Compare its timestamp with the <code>Date:</code> header (the time the sender's app created the message) and with each <code>Received:</code> line above it.</li>
+          <li>A large gap between two lines tells you which hop held the message.</li>
+        </ol>
+        <p>An example with made-up hosts and times, shortened for reading:</p>
+        <pre><code class="language-text">Received: from mx.example.net by mailbox.example.net; Tue, 3 Mar 2026 10:07:02 +0000
+    Received: from smtp.example.com by mx.example.net; Tue, 3 Mar 2026 10:07:01 +0000
+    Received: from app.example.com by smtp.example.com; Tue, 3 Mar 2026 10:01:58 +0000
+    Date: Tue, 3 Mar 2026 10:01:57 +0000</code></pre>
+        <p>Here the message left <code>smtp.example.com</code> about 5 minutes after it arrived there. A gap like this often means the receiving server deferred the first attempt (for example with greylisting) and the sender retried later.</p>
+        <p>The <!--email_off--><a href="https://toolbox.googleapps.com/apps/messageheader/"><!--/email_off-->Google Admin Toolbox Messageheader tool</a> parses pasted headers and shows the delay at each hop.</p>
+        <div class="note">
+          <p><strong>Limits of this method:</strong> each timestamp comes from a different server's clock, so small differences can be clock skew. Forward Email's monitor code makes the same point and does not rely on Received headers or the Date header for this reason (<!--email_off--><a href="https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-message.js"><!--/email_off-->helpers/get-message.js</a>). Headers also only show what happened before the final mailbox stored the message.</p>
+        </div>
+
+        <h2 id="seed-mailboxes">Method 2: measure time to inbox with seed mailboxes</h2>
+        <p>A seed mailbox is a mailbox you own at a provider your recipients use, such as Gmail, Outlook.com, Yahoo or iCloud. Sending regular test messages to seed mailboxes gives you a TTI series you can graph and alert on.</p>
+        <ol class="steps">
+          <li id="step-1">
+            <h3>Create a seed mailbox at each provider</h3>
+            <p>Open one account per provider you care about and turn on IMAP access. Most providers require an app password for IMAP. Use these accounts only for testing so the script can read and delete everything in them.</p>
+          </li>
+          <li id="step-2">
+            <h3>Send from your real sending setup</h3>
+            <p>Send the test through the same server, domain, SPF, DKIM and DMARC setup your real mail uses. A test from a different server measures a different path.</p>
+          </li>
+          <li id="step-3">
+            <h3>Give each test message a unique Message-ID</h3>
+            <p>Generate a random Message-ID for every test and record the time just before you send. The ID lets the script find this exact message among older tests.</p>
+          </li>
+          <li id="step-4">
+            <h3>Poll the inbox over IMAP</h3>
+            <p>Keep an IMAP connection open, send a NOOP so the server reports new messages, and look for the Message-ID. Record the arrival time when it appears. Stop after a timeout, such as one minute, and count the message as late.</p>
+          </li>
+          <li id="step-5">
+            <h3>Use one clock for both timestamps</h3>
+            <p>Take the send time and the arrival time from the machine running the script. Provider timestamps and Received headers come from other clocks and can be off by seconds.</p>
+          </li>
+          <li id="step-6">
+            <h3>Repeat on a schedule and alert on outliers</h3>
+            <p>Run the test every few minutes, store the results, and alert when a delivery passes your threshold or never arrives. Delete old test messages so the inbox stays small.</p>
+          </li>
+        </ol>
+
+        <h2 id="example">Example script (Node.js)</h2>
+        <p>This short script follows the steps above for one seed mailbox. It uses the <!--email_off--><a href="https://nodemailer.com/"><!--/email_off-->Nodemailer</a> and <!--email_off--><a href="https://imapflow.com/"><!--/email_off-->ImapFlow</a> packages (<code>npm install nodemailer imapflow</code>) and reads credentials from environment variables. It is a starting point, not a production monitor.</p>
+        <pre><code class="language-js">// tti-check.mjs: send one test email and time its arrival over IMAP
+    import { randomUUID } from 'node:crypto';
+    import { setTimeout as sleep } from 'node:timers/promises';
+    import nodemailer from 'nodemailer';
+    import { ImapFlow } from 'imapflow';
+
+    const env = process.env;
+
+    const smtp = nodemailer.createTransport({
+      host: env.SMTP_HOST,
+      port: 465,
+      secure: true,
+      auth: { user: env.SMTP_USER, pass: env.SMTP_PASS }
+    });
+
+    const imap = new ImapFlow({
+      host: env.IMAP_HOST,
+      port: 993,
+      secure: true,
+      auth: { user: env.IMAP_USER, pass: env.IMAP_PASS },
+      logger: false
+    });
+
+    const id = `${randomUUID()}@${env.SMTP_USER.split('@')[1]}`;
+
+    await imap.connect();
+    await imap.mailboxOpen('INBOX');
+
+    const sentAt = Date.now();
+    await smtp.sendMail({
+      from: env.SMTP_USER,
+      to: env.IMAP_USER,
+      subject: 'Time to inbox test',
+      text: 'This is an automated time to inbox test.',
+      messageId: `&lt;${id}&gt;`
+    });
+
+    let receivedAt = 0;
+    while (!receivedAt &amp;&amp; Date.now() - sentAt &lt; 60_000) {
+      await imap.noop(); // ask the server to report new messages
+      if (imap.mailbox.exists &gt; 0) {
+        for await (const msg of imap.fetch('1:*', { headers: ['message-id'] })) {
+          if (msg.headers?.toString().includes(id)) receivedAt = Date.now();
+        }
+      }
+      if (!receivedAt) await sleep(250);
+    }
+
+    await imap.logout();
+    console.log(receivedAt ? `TTI: ${(receivedAt - sentAt) / 1000}s` : 'Not received within 60s');</code></pre>
+        <p>Run it from cron or a scheduler every few minutes and send the output to the system you already use for metrics. To compare providers, run one copy per seed mailbox.</p>
+        <p>For a complete, production example, read Forward Email's monitor, <!--email_off--><a href="https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js"><!--/email_off-->jobs/tti.js</a>. It tests several providers in parallel, measures direct and forwarded delivery, keeps two IMAP connections open per provider, and emails its team when a delivery is slow. <!--email_off--><a href="/forward-email-time-to-inbox/"><!--/email_off-->This page explains how it works</a>.</p>
+
+        <h2 id="tips">Tips for accurate results</h2>
+        <ul>
+          <li><strong>Check the folder.</strong> The example only watches the inbox. A message filed as spam never shows up there, so also watch the spam folder if you want to tell "slow" apart from "filtered".</li>
+          <li><strong>Vary the content a little.</strong> Forward Email's monitor generates random subject lines and body text for each test (<!--email_off--><a href="https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js"><!--/email_off-->jobs/tti.js</a>), so the messages do not look like exact duplicates.</li>
+          <li><strong>Keep test volume low.</strong> A test every few minutes per mailbox is enough to spot problems. Postmark runs its TTI checks every five minutes (<!--email_off--><a href="https://postmarkapp.com/blog/why-we-removed-inbox-delivery-tests-from-our-status-page"><!--/email_off-->Postmark blog</a>).</li>
+          <li><strong>Report the median and the slow tail.</strong> One slow message can be a one-off retry. A rising median points to a lasting problem.</li>
+        </ul>
+
+        <h2 id="sources">Sources for this page</h2>
+        <ul class="sources">
+          <li><!--email_off--><a href="https://www.rfc-editor.org/rfc/rfc5321#section-4.4"><!--/email_off-->RFC 5321, section 4.4: trace information (Received headers)</a></li>
+          <li><!--email_off--><a href="https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js"><!--/email_off-->Forward Email: jobs/tti.js</a> and <!--email_off--><a href="https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-message.js"><!--/email_off-->helpers/get-message.js</a></li>
+          <li><!--email_off--><a href="https://postmarkapp.com/blog/why-we-removed-inbox-delivery-tests-from-our-status-page"><!--/email_off-->Postmark: why we removed inbox delivery tests from our status page</a></li>
+          <li><!--email_off--><a href="https://toolbox.googleapps.com/apps/messageheader/"><!--/email_off-->Google Admin Toolbox: Messageheader</a></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-about">
+          <p class="footer-title">TimeToInbox</p>
+          <p>A free guide to time to inbox (TTI) and email delivery speed from the <!--email_off--><a href="https://forwardemail.net"><!--/email_off-->Forward Email</a> team.</p>
+          <p><!--email_off--><a href="/about/"><!--/email_off-->About this site</a> &middot; <!--email_off--><a href="/privacy/"><!--/email_off-->Privacy policy</a></p>
+          <p>Contact: <!--email_off--><a href="https://github.com/forwardemail/timetoinbox.com/issues"><!--/email_off-->GitHub issues</a> &middot; <!--email_off--><a href="mailto:support@forwardemail.net">support@forwardemail.net</a><!--/email_off--></p>
+        </div>
+        <div class="footer-links">
+          <div class="link-group">
+            <p class="footer-title">Guides</p>
+            <ul>
+            <li><!--email_off--><a href="/what-is-time-to-inbox/"><!--/email_off-->What is TTI</a></li>
+            <li><!--email_off--><a href="/how-to-measure-time-to-inbox/"><!--/email_off-->Measure TTI</a></li>
+            <li><!--email_off--><a href="/what-affects-email-delivery-speed/"><!--/email_off-->Speed factors</a></li>
+            <li><!--email_off--><a href="/forward-email-time-to-inbox/"><!--/email_off-->Forward Email TTI</a></li>
+            <li><!--email_off--><a href="/faq/"><!--/email_off-->FAQ</a></li>
+            </ul>
+          </div>
+          <div class="link-group">
+            <p class="footer-title">Forward Email</p>
+            <ul>
+              <li><!--email_off--><a href="https://forwardemail.net"><!--/email_off-->Forward Email home</a></li>
+              <li><!--email_off--><a href="https://forwardemail.net/tti"><!--/email_off-->Live TTI measurements</a></li>
+              <li><!--email_off--><a href="https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js"><!--/email_off-->TTI monitor source code</a></li>
+              <li><!--email_off--><a href="https://forwardemail.net/faq"><!--/email_off-->Forward Email FAQ</a></li>
+              <li><!--email_off--><a href="https://forwardemail.net/private-business-email"><!--/email_off-->Plans and pricing</a></li>
+              <li><!--email_off--><a href="https://github.com/forwardemail"><!--/email_off-->Forward Email on GitHub</a></li>
+              <li><!--email_off--><a href="https://x.com/fwdemail"><!--/email_off-->Forward Email on X</a></li>
+              <li><!--email_off--><a href="https://www.youtube.com/forwardemail"><!--/email_off-->Forward Email on YouTube</a></li>
+            </ul>
+          </div>
+          <div class="link-group">
+            <p class="footer-title">Related sites</p>
+            <ul>
+              <li><!--email_off--><a href="https://alumniemail.com"><!--/email_off-->AlumniEmail.com</a></li>
+              <li><!--email_off--><a href="https://serverauditing.com"><!--/email_off-->ServerAuditing.com</a></li>
+              <li><!--email_off--><a href="https://sshmonitor.com"><!--/email_off-->SSHMonitor.com</a></li>
+              <li><!--email_off--><a href="https://sslmonitor.com"><!--/email_off-->SSLMonitor.com</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>TimeToInbox is run by the Forward Email team. Source code on <!--email_off--><a href="https://github.com/forwardemail/timetoinbox.com"><!--/email_off-->GitHub</a>.</p>
+        <!--email_off--><a class="edit-link" href="https://github.com/forwardemail/timetoinbox.com/blob/main/src/pages/how-to-measure-time-to-inbox.html"><!--/email_off--><svg aria-hidden="true" focusable="false" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>Edit this page on GitHub</span></a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

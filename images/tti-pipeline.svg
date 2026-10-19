@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="380" height="500" viewBox="0 0 380 500" role="img" aria-labelledby="t d">
+  <title id="t">Where time to inbox is spent</title>
+  <desc id="d">Five stages an email passes through: you press send, the sending server queues and delivers it, the receiving server checks it, the message is stored in the recipient's mailbox, and the mail app shows it. Time to inbox covers the first four stages.</desc>
+  <style>
+    .box{fill:#fff;stroke:#1a365d;stroke-width:2}
+    .app{fill:#fff;stroke:#4a5568;stroke-width:2;stroke-dasharray:6 4}
+    .t{font:700 17px system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;fill:#1a202c}
+    .s{font:13px system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;fill:#4a5568}
+    .arrow{stroke:#2563eb;stroke-width:2.5;fill:none}
+    .head{fill:#2563eb}
+    .brace{stroke:#b45309;stroke-width:3;fill:none}
+    .bl{font:700 17px system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;fill:#b45309}
+  </style>
+  <rect width="380" height="500" rx="12" fill="#f8f9fa"/>
+  <g>
+    <rect class="box" x="16" y="16" width="280" height="66" rx="8"/>
+    <text class="t" x="30" y="44">1. You press send</text>
+    <text class="s" x="30" y="66">Your app hands the message to SMTP</text>
+  </g>
+  <path class="arrow" d="M156 82v18"/><path class="head" d="M150 98h12l-6 8z"/>
+  <g>
+    <rect class="box" x="16" y="108" width="280" height="66" rx="8"/>
+    <text class="t" x="30" y="136">2. Sending server</text>
+    <text class="s" x="30" y="158">Queue, DNS lookup, connect to MX</text>
+  </g>
+  <path class="arrow" d="M156 174v18"/><path class="head" d="M150 190h12l-6 8z"/>
+  <g>
+    <rect class="box" x="16" y="200" width="280" height="66" rx="8"/>
+    <text class="t" x="30" y="228">3. Receiving server</text>
+    <text class="s" x="30" y="250">Greylisting, SPF/DKIM/DMARC, spam scan</text>
+  </g>
+  <path class="arrow" d="M156 266v18"/><path class="head" d="M150 282h12l-6 8z"/>
+  <g>
+    <rect class="box" x="16" y="292" width="280" height="66" rx="8"/>
+    <text class="t" x="30" y="320">4. Recipient's mailbox</text>
+    <text class="s" x="30" y="342">Message is stored in the inbox</text>
+  </g>
+  <path class="arrow" d="M156 358v18"/><path class="head" d="M150 374h12l-6 8z"/>
+  <g>
+    <rect class="app" x="16" y="384" width="280" height="66" rx="8"/>
+    <text class="t" x="30" y="412">5. Mail app</text>
+    <text class="s" x="30" y="434">Shows it on push or on the next fetch</text>
+  </g>
+  <path class="brace" d="M306 49h14v276h-14"/>
+  <text class="bl" transform="translate(348 187) rotate(90)" text-anchor="middle">Time to inbox</text>
+  <text class="s" x="16" y="482">Stage 5 adds delay on the reader's side.</text>
+</svg>

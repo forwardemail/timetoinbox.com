@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>What Slows Email Delivery? 8 Causes of Delayed Email</title>
+  <meta name="description" content="Why email arrives late: greylisting, retry queues, SPF, DKIM and DMARC, reputation, rate limits, forwarding and mail apps.">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://timetoinbox.com/what-affects-email-delivery-speed/">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="theme-color" content="#1a365d">
+  <meta name="color-scheme" content="light">
+  <meta name="author" content="Forward Email">
+  <link rel="stylesheet" href="/css/site.min.css">
+  <link rel="icon" href="/favicon.ico" sizes="48x48 32x32 16x16">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="alternate" type="text/markdown" href="/what-affects-email-delivery-speed.md" title="What Affects Email Delivery Speed (Markdown)">
+  <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
+  <link rel="author" href="/about/">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="TimeToInbox">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:title" content="What Slows Email Delivery? 8 Causes of Delayed Email">
+  <meta property="og:description" content="Why email arrives late: greylisting, retry queues, SPF, DKIM and DMARC, reputation, rate limits, forwarding and mail apps.">
+  <meta property="og:url" content="https://timetoinbox.com/what-affects-email-delivery-speed/">
+  <meta property="og:image" content="https://timetoinbox.com/og-image.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="TimeToInbox: how long email takes to reach the inbox, and how to measure it">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="What Slows Email Delivery? 8 Causes of Delayed Email">
+  <meta name="twitter:description" content="Why email arrives late: greylisting, retry queues, SPF, DKIM and DMARC, reputation, rate limits, forwarding and mail apps.">
+  <meta name="twitter:image" content="https://timetoinbox.com/og-image.png">
+  <meta name="twitter:image:alt" content="TimeToInbox: how long email takes to reach the inbox, and how to measure it">
+  <script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://forwardemail.net/#organization","name":"Forward Email","url":"https://forwardemail.net","logo":"https://forwardemail.net/img/logo-square-180x180.png","sameAs":["https://github.com/forwardemail","https://x.com/fwdemail","https://www.youtube.com/forwardemail","https://www.reddit.com/r/forwardemail/"],"contactPoint":[{"@type":"ContactPoint","contactType":"customer support","email":"support@forwardemail.net","url":"https://forwardemail.net/en/faq"},{"@type":"ContactPoint","contactType":"security","email":"security@forwardemail.net","url":"https://forwardemail.net/en/security"}]},{"@type":"WebSite","@id":"https://timetoinbox.com/#website","url":"https://timetoinbox.com/","name":"TimeToInbox","alternateName":"Time to Inbox","description":"TimeToInbox explains time to inbox (TTI), the time from sending an email to its arrival in the recipient's inbox: what it measures, how to measure it yourself, what slows delivery down, and how Forward Email publishes its own TTI measurements and the public source code behind them.","inLanguage":"en","publisher":{"@id":"https://forwardemail.net/#organization"}},{"@type":"WebPage","@id":"https://timetoinbox.com/what-affects-email-delivery-speed/#webpage","url":"https://timetoinbox.com/what-affects-email-delivery-speed/","name":"What Affects Email Delivery Speed","headline":"What Affects Email Delivery Speed","description":"Most delayed email is not lost. A server along the way returned a temporary error, and the message waited in a queue until the sender tried again. This page covers the common causes and what you can change.","inLanguage":"en","isPartOf":{"@id":"https://timetoinbox.com/#website"},"publisher":{"@id":"https://forwardemail.net/#organization"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://timetoinbox.com/og-image.png","width":1200,"height":630},"about":[{"@type":"Thing","name":"Email delivery speed"},{"@type":"Thing","name":"Greylisting"},{"@type":"Thing","name":"Email authentication"}],"breadcrumb":{"@id":"https://timetoinbox.com/what-affects-email-delivery-speed/#breadcrumb"}},{"@type":"BreadcrumbList","@id":"https://timetoinbox.com/what-affects-email-delivery-speed/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://timetoinbox.com/"},{"@type":"ListItem","position":2,"name":"Speed factors","item":"https://timetoinbox.com/what-affects-email-delivery-speed/"}]}]}
+  </script>
+</head>
+<body>
+  <!--email_off--><a class="skip-link" href="#main"><!--/email_off-->Skip to content</a>
+  <header class="site-header">
+    <div class="container header-content">
+      <!--email_off--><a class="logo" href="/"><!--/email_off--><img src="/icon.svg" alt="" width="44" height="44" fetchpriority="high"><span>TimeToInbox</span></a>
+      <nav aria-label="Main">
+        <ul class="nav-links">
+          <li><!--email_off--><a href="/what-is-time-to-inbox/"><!--/email_off-->What is TTI</a></li>
+          <li><!--email_off--><a href="/how-to-measure-time-to-inbox/"><!--/email_off-->Measure TTI</a></li>
+          <li><!--email_off--><a href="/what-affects-email-delivery-speed/" aria-current="page"><!--/email_off-->Speed factors</a></li>
+          <li><!--email_off--><a href="/forward-email-time-to-inbox/"><!--/email_off-->Forward Email TTI</a></li>
+          <li><!--email_off--><a href="/faq/"><!--/email_off-->FAQ</a></li>
+          <li><!--email_off--><a href="/about/"><!--/email_off-->About</a></li>
+          <li><!--email_off--><a class="btn btn-primary nav-cta" href="https://forwardemail.net"><!--/email_off-->Try Forward Email</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="hero hero-inner">
+      <div class="container hero-content">
+        <nav class="breadcrumb" aria-label="Breadcrumb"><ol><li><!--email_off--><a href="/"><!--/email_off-->Home</a></li><li><span aria-current="page">Speed factors</span></li></ol></nav>
+        <h1>What Affects Email Delivery Speed</h1>
+        <p class="lead">Most delayed email is not lost. A server along the way returned a temporary error, and the message waited in a queue until the sender tried again. This page covers the common causes and what you can change.</p>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container narrow prose">
+        <h2 id="quick-answer">Quick answer</h2>
+        <p class="answer">Email is usually delayed by a temporary rejection (a 4xx SMTP reply) followed by a wait in the sender's retry queue. Greylisting, rate limits, failed DNS lookups during SPF checks, and a poor or unknown sender reputation all cause temporary rejections. How long the message then waits depends on the sending server's retry schedule.</p>
+
+        <div class="table-wrap">
+          <table>
+            <caption>Causes of slow email delivery at a glance</caption>
+            <thead>
+              <tr><th scope="col">Cause</th><th scope="col">What happens</th><th scope="col">What you can do</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><!--email_off--><a href="#greylisting"><!--/email_off-->Greylisting</a></td><td>First message from an unknown sender gets a 4xx reply and must be retried</td><td>Send from stable IP addresses and keep retry intervals short</td></tr>
+              <tr><td><!--email_off--><a href="#retry-queues"><!--/email_off-->Retry queues</a></td><td>Deferred mail waits minutes to hours before the next attempt</td><td>Check your server's backoff settings and queue size</td></tr>
+              <tr><td><!--email_off--><a href="#authentication"><!--/email_off-->SPF, DKIM, DMARC</a></td><td>Missing or failing authentication leads to deferral, spam filing or rejection</td><td>Publish SPF, sign with DKIM, publish DMARC</td></tr>
+              <tr><td><!--email_off--><a href="#reputation"><!--/email_off-->Reputation and rate limits</a></td><td>Receivers slow down unknown or high-volume senders</td><td>Warm up new IPs and domains, keep complaint rates low</td></tr>
+              <tr><td><!--email_off--><a href="#volume"><!--/email_off-->Your own sending volume</a></td><td>Large batches queue behind each other on your side</td><td>Send time-sensitive mail on its own stream</td></tr>
+              <tr><td><!--email_off--><a href="#content"><!--/email_off-->Content scanning and size</a></td><td>Large messages take longer to transfer and scan</td><td>Link to large files instead of attaching them</td></tr>
+              <tr><td><!--email_off--><a href="#forwarding"><!--/email_off-->Forwarding hops</a></td><td>Each forward is a new delivery that can be deferred again</td><td>Deliver straight to the final mailbox where possible</td></tr>
+              <tr><td><!--email_off--><a href="#mail-apps"><!--/email_off-->Mail app fetch schedule</a></td><td>The message is in the mailbox, but the app has not checked yet</td><td>Use push or IMAP IDLE</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="greylisting">1. Greylisting</h2>
+        <p>Greylisting is an anti-spam technique where a receiving server temporarily rejects mail from a sender it does not know yet. RFC 6647 describes it as "rejecting mail from unfamiliar sources with a 'transient (soft) fail' (4xx) [SMTP] error code" (<!--email_off--><a href="https://www.rfc-editor.org/rfc/rfc6647"><!--/email_off-->RFC 6647</a>). A real mail server retries and gets through. Many spam tools do not retry.</p>
+        <p>The delay you see is the time until the sender's next attempt. RFC 6647 notes that "some popular MTAs do not retry failed delivery attempts for an hour or more," and that senders with several outbound servers can be greylisted again when a retry comes from a different IP address.</p>
+        <p>Forward Email documents its own policy: the first message from a new sender (keyed by root domain or IP address) is rejected with a 450 code until 5 minutes have passed since the first attempt, the record is kept for 30 days, and senders on its allowlist skip greylisting (<!--email_off--><a href="https://forwardemail.net/faq#do-you-have-a-greylist"><!--/email_off-->Forward Email FAQ: Do you have a greylist</a>).</p>
+        <p><strong>What you can do:</strong> send from a small, stable set of IP addresses, set reverse DNS (PTR) for each one, and make sure your server retries within minutes rather than hours.</p>
+
+        <h2 id="retry-queues">2. Retry queues after temporary failures</h2>
+        <p>Any 4xx reply puts the message back in the sender's queue. RFC 5321 says "the retry interval SHOULD be at least 30 minutes" and that the give-up time "generally needs to be at least 4-5 days" (<!--email_off--><a href="https://www.rfc-editor.org/rfc/rfc5321#section-4.5.4.1"><!--/email_off-->RFC 5321, section 4.5.4.1</a>).</p>
+        <p>Real servers are often faster. Postfix, for example, defaults to waiting at least 300 seconds and at most 4000 seconds between attempts for a deferred message, scans its deferred queue every 300 seconds, and returns a message as undeliverable after 5 days (<!--email_off--><a href="https://www.postfix.org/postconf.5.html#minimal_backoff_time"><!--/email_off-->Postfix postconf(5)</a>).</p>
+        <p>So a single temporary failure on a default Postfix server adds at least about 5 minutes, and repeated failures stretch toward an hour between attempts.</p>
+        <p><strong>What you can do:</strong> watch your deferred queue, read the 4xx replies in your logs to find the cause, and fix that cause rather than only shortening retry times.</p>
+
+        <h2 id="authentication">3. SPF, DKIM and DMARC</h2>
+        <p>Receiving servers check whether a message is authorized by the sender's domain. SPF lists the servers allowed to send for a domain, DKIM adds a signature that proves the domain sent the message, and DMARC tells receivers what to do when those checks fail.</p>
+        <p>Gmail requires every sender to set up SPF or DKIM, to have valid forward and reverse DNS for sending IPs, and to use TLS. Senders of more than 5,000 messages a day to Gmail also need SPF, DKIM and DMARC. Google says the guidelines help "prevent Gmail from limiting sending rates, blocking messages, or marking messages as spam" (<!--email_off--><a href="https://support.google.com/a/answer/81126"><!--/email_off-->Google email sender guidelines</a>).</p>
+        <p>DNS problems during these checks can also delay mail. If an SPF check hits a temporary DNS error, RFC 7208 says the receiver can accept the message or temporarily reject it, and a rejection "SHOULD use an SMTP reply code of 451" (<!--email_off--><a href="https://www.rfc-editor.org/rfc/rfc7208#section-8.6"><!--/email_off-->RFC 7208, section 8.6</a>). The message then waits for a retry.</p>
+        <p><strong>What you can do:</strong> publish an SPF record that lists every service that sends for your domain, sign all mail with DKIM, publish a DMARC record, and use reliable DNS hosting. Forward Email has setup guides for <!--email_off--><a href="https://forwardemail.net/faq#how-do-i-set-up-spf-for-forward-email"><!--/email_off-->SPF</a>, <!--email_off--><a href="https://forwardemail.net/faq#how-do-i-set-up-dkim-for-forward-email"><!--/email_off-->DKIM</a> and <!--email_off--><a href="https://forwardemail.net/faq#how-do-i-set-up-dmarc-for-forward-email"><!--/email_off-->DMARC</a>.</p>
+
+        <h2 id="reputation">4. Sender reputation and rate limits</h2>
+        <p>Mailbox providers limit how much mail they accept from each sender, and the limits are lower for senders they do not know or do not trust. Extra mail gets a temporary rejection and waits in the sender's queue.</p>
+        <p>Forward Email publishes its inbound limits as an example: senders that are not on its allowlist can deliver up to 1000 messages per day per sender and recipient domain into its mailboxes, with a burst limit of 50 messages per sender and domain per minute, while large providers such as gmail.com and allowlisted senders have higher limits (<!--email_off--><a href="https://forwardemail.net/faq#do-you-have-rate-limiting"><!--/email_off-->Forward Email FAQ: Do you have rate limiting</a>).</p>
+        <p><strong>What you can do:</strong> raise volume on new IP addresses and domains gradually, keep spam complaints low (Gmail asks senders to stay below 0.3%), and remove addresses that bounce.</p>
+
+        <h2 id="volume">5. Your own sending volume</h2>
+        <p>Delays also start on your side. A newsletter to many recipients can fill your outbound queue, and a password reset sent at the same moment waits behind it. Sending services also slow down accounts that send unusual volumes. Forward Email, for example, slows outbound sending with a 421 reply when too many of an account's recent messages are still waiting in the queue (<!--email_off--><a href="https://forwardemail.net/faq#what-are-your-outbound-smtp-limits"><!--/email_off-->Forward Email FAQ: outbound SMTP limits</a>).</p>
+        <p><strong>What you can do:</strong> send transactional mail (sign-ins, resets, receipts) through a separate stream or server from bulk mail, so a large send cannot hold it up.</p>
+
+        <h2 id="content">6. Content scanning and message size</h2>
+        <p>Receiving servers scan messages for spam and malware before they file them. Bigger messages take longer to upload and to scan, and a message that looks suspicious can be held for more checks or filed as spam. Spam filing does not change the delivery time, but to the recipient it looks the same as a message that never came.</p>
+        <p><strong>What you can do:</strong> keep transactional emails small and plain, and link to large files instead of attaching them.</p>
+
+        <h2 id="forwarding">7. Forwarding hops</h2>
+        <p>When an address forwards to another mailbox, the forwarding server receives the message and then sends it again to the final provider. That second delivery can be greylisted, rate limited or deferred on its own. Forwarding can also break SPF, because the forwarding server is not listed in the original sender's SPF record. Forward Email re-seals forwarded messages with ARC, and rewrites the From header only when the sender's DMARC check did not pass and no DKIM signature aligns with the From header (<!--email_off--><a href="https://forwardemail.net/faq#how-do-you-handle-email-delivery-issues"><!--/email_off-->Forward Email FAQ: How do you handle email delivery issues</a>).</p>
+        <p>Forward Email measures direct and forwarded delivery separately on its <!--email_off--><a href="https://forwardemail.net/tti"><!--/email_off-->live TTI page</a>, so you can see the cost of the extra hop for each provider.</p>
+
+        <h2 id="mail-apps">8. Mail apps that check on a timer</h2>
+        <p>Sometimes the message is already in the mailbox and the app has not shown it yet. Apps that use push notifications or the IMAP IDLE command (<!--email_off--><a href="https://www.rfc-editor.org/rfc/rfc2177"><!--/email_off-->RFC 2177</a>) show new mail right away. Apps that fetch on a schedule, for example every 15 minutes, show it on the next fetch. Check webmail to tell this case apart from a real delivery delay.</p>
+
+        <h2 id="sources">Sources for this page</h2>
+        <ul class="sources">
+          <li><!--email_off--><a href="https://www.rfc-editor.org/rfc/rfc5321#section-4.5.4.1"><!--/email_off-->RFC 5321: Simple Mail Transfer Protocol, section 4.5.4.1</a></li>
+          <li><!--email_off--><a href="https://www.rfc-editor.org/rfc/rfc6647"><!--/email_off-->RFC 6647: Email Greylisting</a></li>
+          <li><!--email_off--><a href="https://www.rfc-editor.org/rfc/rfc7208#section-8.6"><!--/email_off-->RFC 7208: Sender Policy Framework, section 8.6</a></li>
+          <li><!--email_off--><a href="https://www.postfix.org/postconf.5.html#minimal_backoff_time"><!--/email_off-->Postfix configuration parameters</a></li>
+          <li><!--email_off--><a href="https://support.google.com/a/answer/81126"><!--/email_off-->Google: Email sender guidelines</a></li>
+          <li><!--email_off--><a href="https://forwardemail.net/faq"><!--/email_off-->Forward Email FAQ</a></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-about">
+          <p class="footer-title">TimeToInbox</p>
+          <p>A free guide to time to inbox (TTI) and email delivery speed from the <!--email_off--><a href="https://forwardemail.net"><!--/email_off-->Forward Email</a> team.</p>
+          <p><!--email_off--><a href="/about/"><!--/email_off-->About this site</a> &middot; <!--email_off--><a href="/privacy/"><!--/email_off-->Privacy policy</a></p>
+          <p>Contact: <!--email_off--><a href="https://github.com/forwardemail/timetoinbox.com/issues"><!--/email_off-->GitHub issues</a> &middot; <!--email_off--><a href="mailto:support@forwardemail.net">support@forwardemail.net</a><!--/email_off--></p>
+        </div>
+        <div class="footer-links">
+          <div class="link-group">
+            <p class="footer-title">Guides</p>
+            <ul>
+            <li><!--email_off--><a href="/what-is-time-to-inbox/"><!--/email_off-->What is TTI</a></li>
+            <li><!--email_off--><a href="/how-to-measure-time-to-inbox/"><!--/email_off-->Measure TTI</a></li>
+            <li><!--email_off--><a href="/what-affects-email-delivery-speed/"><!--/email_off-->Speed factors</a></li>
+            <li><!--email_off--><a href="/forward-email-time-to-inbox/"><!--/email_off-->Forward Email TTI</a></li>
+            <li><!--email_off--><a href="/faq/"><!--/email_off-->FAQ</a></li>
+            </ul>
+          </div>
+          <div class="link-group">
+            <p class="footer-title">Forward Email</p>
+            <ul>
+              <li><!--email_off--><a href="https://forwardemail.net"><!--/email_off-->Forward Email home</a></li>
+              <li><!--email_off--><a href="https://forwardemail.net/tti"><!--/email_off-->Live TTI measurements</a></li>
+              <li><!--email_off--><a href="https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js"><!--/email_off-->TTI monitor source code</a></li>
+              <li><!--email_off--><a href="https://forwardemail.net/faq"><!--/email_off-->Forward Email FAQ</a></li>
+              <li><!--email_off--><a href="https://forwardemail.net/private-business-email"><!--/email_off-->Plans and pricing</a></li>
+              <li><!--email_off--><a href="https://github.com/forwardemail"><!--/email_off-->Forward Email on GitHub</a></li>
+              <li><!--email_off--><a href="https://x.com/fwdemail"><!--/email_off-->Forward Email on X</a></li>
+              <li><!--email_off--><a href="https://www.youtube.com/forwardemail"><!--/email_off-->Forward Email on YouTube</a></li>
+            </ul>
+          </div>
+          <div class="link-group">
+            <p class="footer-title">Related sites</p>
+            <ul>
+              <li><!--email_off--><a href="https://alumniemail.com"><!--/email_off-->AlumniEmail.com</a></li>
+              <li><!--email_off--><a href="https://serverauditing.com"><!--/email_off-->ServerAuditing.com</a></li>
+              <li><!--email_off--><a href="https://sshmonitor.com"><!--/email_off-->SSHMonitor.com</a></li>
+              <li><!--email_off--><a href="https://sslmonitor.com"><!--/email_off-->SSLMonitor.com</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>TimeToInbox is run by the Forward Email team. Source code on <!--email_off--><a href="https://github.com/forwardemail/timetoinbox.com"><!--/email_off-->GitHub</a>.</p>
+        <!--email_off--><a class="edit-link" href="https://github.com/forwardemail/timetoinbox.com/blob/main/src/pages/what-affects-email-delivery-speed.html"><!--/email_off--><svg aria-hidden="true" focusable="false" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>Edit this page on GitHub</span></a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

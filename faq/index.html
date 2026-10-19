@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Time to Inbox FAQ: Email Delivery Delays Explained</title>
+  <meta name="description" content="Answers about time to inbox: normal delivery times, late reset and verification emails, greylisting and forwarding delays.">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://timetoinbox.com/faq/">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="theme-color" content="#1a365d">
+  <meta name="color-scheme" content="light">
+  <meta name="author" content="Forward Email">
+  <link rel="stylesheet" href="/css/site.min.css">
+  <link rel="icon" href="/favicon.ico" sizes="48x48 32x32 16x16">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="alternate" type="text/markdown" href="/faq.md" title="Time to Inbox FAQ (Markdown)">
+  <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
+  <link rel="author" href="/about/">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="TimeToInbox">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:title" content="Time to Inbox FAQ: Email Delivery Delays Explained">
+  <meta property="og:description" content="Answers about time to inbox: normal delivery times, late reset and verification emails, greylisting and forwarding delays.">
+  <meta property="og:url" content="https://timetoinbox.com/faq/">
+  <meta property="og:image" content="https://timetoinbox.com/og-image.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="TimeToInbox: how long email takes to reach the inbox, and how to measure it">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Time to Inbox FAQ: Email Delivery Delays Explained">
+  <meta name="twitter:description" content="Answers about time to inbox: normal delivery times, late reset and verification emails, greylisting and forwarding delays.">
+  <meta name="twitter:image" content="https://timetoinbox.com/og-image.png">
+  <meta name="twitter:image:alt" content="TimeToInbox: how long email takes to reach the inbox, and how to measure it">
+  <script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://forwardemail.net/#organization","name":"Forward Email","url":"https://forwardemail.net","logo":"https://forwardemail.net/img/logo-square-180x180.png","sameAs":["https://github.com/forwardemail","https://x.com/fwdemail","https://www.youtube.com/forwardemail","https://www.reddit.com/r/forwardemail/"],"contactPoint":[{"@type":"ContactPoint","contactType":"customer support","email":"support@forwardemail.net","url":"https://forwardemail.net/en/faq"},{"@type":"ContactPoint","contactType":"security","email":"security@forwardemail.net","url":"https://forwardemail.net/en/security"}]},{"@type":"WebSite","@id":"https://timetoinbox.com/#website","url":"https://timetoinbox.com/","name":"TimeToInbox","alternateName":"Time to Inbox","description":"TimeToInbox explains time to inbox (TTI), the time from sending an email to its arrival in the recipient's inbox: what it measures, how to measure it yourself, what slows delivery down, and how Forward Email publishes its own TTI measurements and the public source code behind them.","inLanguage":"en","publisher":{"@id":"https://forwardemail.net/#organization"}},{"@type":"FAQPage","@id":"https://timetoinbox.com/faq/#webpage","url":"https://timetoinbox.com/faq/","name":"Time to Inbox FAQ","headline":"Time to Inbox FAQ","description":"Short answers to common questions about how long email takes to arrive and why it is sometimes late. Each answer links to a longer guide or a primary source.","inLanguage":"en","isPartOf":{"@id":"https://timetoinbox.com/#website"},"publisher":{"@id":"https://forwardemail.net/#organization"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://timetoinbox.com/og-image.png","width":1200,"height":630},"breadcrumb":{"@id":"https://timetoinbox.com/faq/#breadcrumb"},"mainEntity":[{"@type":"Question","name":"What is time to inbox (TTI)?","acceptedAnswer":{"@type":"Answer","text":"Time to inbox is the time between sending an email and its arrival in the recipient's inbox, usually measured in seconds. It measures delivery speed, not whether the message was opened. See what is time to inbox."}},{"@type":"Question","name":"How long should an email take to arrive?","acceptedAnswer":{"@type":"Answer","text":"Between well-configured servers, delivery usually takes a few seconds. There is no official target. Forward Email alerts its own engineers when a test message takes 10 seconds or longer. A delay of several minutes or more usually means a server deferred the message and the sender retried it later."}},{"@type":"Question","name":"Why is my password reset or verification email late?","acceptedAnswer":{"@type":"Answer","text":"The most common reasons are greylisting at the recipient's provider, rate limiting of the sender, failed SPF or DKIM checks, or a mail app that only checks for new mail every few minutes. Check the spam folder and webmail first. If the message is there, read its Received headers to see which hop held it. See what affects email delivery speed."}},{"@type":"Question","name":"What is greylisting and how long does it delay email?","acceptedAnswer":{"@type":"Answer","text":"Greylisting is when a receiving server temporarily rejects mail from a sender it has not seen before, with a 4xx reply, and accepts it when the sender retries (RFC 6647). The delay equals the sender's retry interval. Forward Email's greylist requires 5 minutes to pass (Forward Email FAQ), Postfix retries deferred mail after at least 300 seconds by default, and RFC 5321 suggests waiting at least 30 minutes."}},{"@type":"Question","name":"Do SPF, DKIM and DMARC affect how fast email arrives?","acceptedAnswer":{"@type":"Answer","text":"Yes, indirectly. Gmail requires SPF or DKIM for all senders and SPF, DKIM and DMARC for senders of more than 5,000 messages a day, and says following them helps prevent Gmail from limiting sending rates, blocking messages or marking messages as spam (Google sender guidelines). A DNS error during an SPF check can also lead to a temporary 451 rejection and a retry (RFC 7208)."}},{"@type":"Question","name":"How do I measure time to inbox?","acceptedAnswer":{"@type":"Answer","text":"Send a test email with a unique Message-ID to a mailbox you control, poll it over IMAP until the message appears, and subtract the send time from the arrival time using one clock. For a single message you already have, compare the timestamps in its Received headers. See how to measure time to inbox."}},{"@type":"Question","name":"Is time to inbox the same as deliverability?","acceptedAnswer":{"@type":"Answer","text":"No. Deliverability usually means whether mail is accepted and lands in the inbox instead of spam. Time to inbox measures how long that takes. A greylisted message counts as delivered but can arrive many minutes late."}},{"@type":"Question","name":"Why can forwarded email be slower than direct email?","acceptedAnswer":{"@type":"Answer","text":"A forwarded message is delivered twice: once to the forwarding server and again to the final mailbox. The second delivery can be greylisted, rate limited or deferred on its own. Forward Email publishes direct and forwarded times side by side on its live TTI page."}},{"@type":"Question","name":"Why does email show up in webmail before my phone?","acceptedAnswer":{"@type":"Answer","text":"The message is already in the mailbox, but the app on your phone has not checked yet. Apps that use push or IMAP IDLE show new mail right away, and apps that fetch on a schedule show it on the next fetch. This delay happens on the reader's device, not on the delivery path."}},{"@type":"Question","name":"Where can I see Forward Email's time to inbox?","acceptedAnswer":{"@type":"Answer","text":"On the Forward Email time to inbox page. It shows the latest direct and forwarding delivery times for each tested provider and a chart of the past 24 hours. This guide explains how those numbers are measured."}},{"@type":"Question","name":"Is the Forward Email TTI monitor code public?","acceptedAnswer":{"@type":"Answer","text":"Yes. The monitor is jobs/tti.js in the forwardemail.net repository on GitHub, and the IMAP polling logic is in helpers/get-message.js."}},{"@type":"Question","name":"Does TimeToInbox use cookies or tracking?","acceptedAnswer":{"@type":"Answer","text":"No. This site is static HTML and CSS with no JavaScript, cookies, analytics or third-party requests. It is hosted on GitHub Pages and served through Cloudflare, which processes visitor IP addresses. Read the privacy policy."}}]},{"@type":"BreadcrumbList","@id":"https://timetoinbox.com/faq/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://timetoinbox.com/"},{"@type":"ListItem","position":2,"name":"FAQ","item":"https://timetoinbox.com/faq/"}]}]}
+  </script>
+</head>
+<body>
+  <!--email_off--><a class="skip-link" href="#main"><!--/email_off-->Skip to content</a>
+  <header class="site-header">
+    <div class="container header-content">
+      <!--email_off--><a class="logo" href="/"><!--/email_off--><img src="/icon.svg" alt="" width="44" height="44" fetchpriority="high"><span>TimeToInbox</span></a>
+      <nav aria-label="Main">
+        <ul class="nav-links">
+          <li><!--email_off--><a href="/what-is-time-to-inbox/"><!--/email_off-->What is TTI</a></li>
+          <li><!--email_off--><a href="/how-to-measure-time-to-inbox/"><!--/email_off-->Measure TTI</a></li>
+          <li><!--email_off--><a href="/what-affects-email-delivery-speed/"><!--/email_off-->Speed factors</a></li>
+          <li><!--email_off--><a href="/forward-email-time-to-inbox/"><!--/email_off-->Forward Email TTI</a></li>
+          <li><!--email_off--><a href="/faq/" aria-current="page"><!--/email_off-->FAQ</a></li>
+          <li><!--email_off--><a href="/about/"><!--/email_off-->About</a></li>
+          <li><!--email_off--><a class="btn btn-primary nav-cta" href="https://forwardemail.net"><!--/email_off-->Try Forward Email</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="hero hero-inner">
+      <div class="container hero-content">
+        <nav class="breadcrumb" aria-label="Breadcrumb"><ol><li><!--email_off--><a href="/"><!--/email_off-->Home</a></li><li><span aria-current="page">FAQ</span></li></ol></nav>
+        <h1>Time to Inbox FAQ</h1>
+        <p class="lead">Short answers to common questions about how long email takes to arrive and why it is sometimes late. Each answer links to a longer guide or a primary source.</p>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container narrow">
+        <div class="faq-item">
+          <h2 class="faq-q" id="what-is-tti">What is time to inbox (TTI)?</h2>
+          <div class="faq-a">
+            <p>Time to inbox is the time between sending an email and its arrival in the recipient's inbox, usually measured in seconds. It measures delivery speed, not whether the message was opened. See <!--email_off--><a href="/what-is-time-to-inbox/"><!--/email_off-->what is time to inbox</a>.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <h2 class="faq-q" id="how-long">How long should an email take to arrive?</h2>
+          <div class="faq-a">
+            <p>Between well-configured servers, delivery usually takes a few seconds. There is no official target. Forward Email alerts its own engineers when a test message takes 10 seconds or longer. A delay of several minutes or more usually means a server deferred the message and the sender retried it later.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <h2 class="faq-q" id="late-reset-email">Why is my password reset or verification email late?</h2>
+          <div class="faq-a">
+            <p>The most common reasons are greylisting at the recipient's provider, rate limiting of the sender, failed SPF or DKIM checks, or a mail app that only checks for new mail every few minutes. Check the spam folder and webmail first. If the message is there, read its Received headers to see which hop held it. See <!--email_off--><a href="/what-affects-email-delivery-speed/"><!--/email_off-->what affects email delivery speed</a>.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <h2 class="faq-q" id="greylisting">What is greylisting and how long does it delay email?</h2>
+          <div class="faq-a">
+            <p>Greylisting is when a receiving server temporarily rejects mail from a sender it has not seen before, with a 4xx reply, and accepts it when the sender retries (<!--email_off--><a href="https://www.rfc-editor.org/rfc/rfc6647"><!--/email_off-->RFC 6647</a>). The delay equals the sender's retry interval. Forward Email's greylist requires 5 minutes to pass (<!--email_off--><a href="https://forwardemail.net/faq#do-you-have-a-greylist"><!--/email_off-->Forward Email FAQ</a>), Postfix retries deferred mail after at least 300 seconds by default, and RFC 5321 suggests waiting at least 30 minutes.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <h2 class="faq-q" id="authentication">Do SPF, DKIM and DMARC affect how fast email arrives?</h2>
+          <div class="faq-a">
+            <p>Yes, indirectly. Gmail requires SPF or DKIM for all senders and SPF, DKIM and DMARC for senders of more than 5,000 messages a day, and says following them helps prevent Gmail from limiting sending rates, blocking messages or marking messages as spam (<!--email_off--><a href="https://support.google.com/a/answer/81126"><!--/email_off-->Google sender guidelines</a>). A DNS error during an SPF check can also lead to a temporary 451 rejection and a retry (<!--email_off--><a href="https://www.rfc-editor.org/rfc/rfc7208#section-8.6"><!--/email_off-->RFC 7208</a>).</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <h2 class="faq-q" id="measure">How do I measure time to inbox?</h2>
+          <div class="faq-a">
+            <p>Send a test email with a unique Message-ID to a mailbox you control, poll it over IMAP until the message appears, and subtract the send time from the arrival time using one clock. For a single message you already have, compare the timestamps in its Received headers. See <!--email_off--><a href="/how-to-measure-time-to-inbox/"><!--/email_off-->how to measure time to inbox</a>.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <h2 class="faq-q" id="deliverability">Is time to inbox the same as deliverability?</h2>
+          <div class="faq-a">
+            <p>No. Deliverability usually means whether mail is accepted and lands in the inbox instead of spam. Time to inbox measures how long that takes. A greylisted message counts as delivered but can arrive many minutes late.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <h2 class="faq-q" id="forwarding">Why can forwarded email be slower than direct email?</h2>
+          <div class="faq-a">
+            <p>A forwarded message is delivered twice: once to the forwarding server and again to the final mailbox. The second delivery can be greylisted, rate limited or deferred on its own. Forward Email publishes direct and forwarded times side by side on its <!--email_off--><a href="https://forwardemail.net/tti"><!--/email_off-->live TTI page</a>.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <h2 class="faq-q" id="phone">Why does email show up in webmail before my phone?</h2>
+          <div class="faq-a">
+            <p>The message is already in the mailbox, but the app on your phone has not checked yet. Apps that use push or IMAP IDLE show new mail right away, and apps that fetch on a schedule show it on the next fetch. This delay happens on the reader's device, not on the delivery path.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <h2 class="faq-q" id="forward-email-tti">Where can I see Forward Email's time to inbox?</h2>
+          <div class="faq-a">
+            <p>On the <!--email_off--><a href="https://forwardemail.net/tti"><!--/email_off-->Forward Email time to inbox page</a>. It shows the latest direct and forwarding delivery times for each tested provider and a chart of the past 24 hours. <!--email_off--><a href="/forward-email-time-to-inbox/"><!--/email_off-->This guide explains how those numbers are measured</a>.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <h2 class="faq-q" id="source-code">Is the Forward Email TTI monitor code public?</h2>
+          <div class="faq-a">
+            <p>Yes. The monitor is <!--email_off--><a href="https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js"><!--/email_off-->jobs/tti.js</a> in the forwardemail.net repository on GitHub, and the IMAP polling logic is in <!--email_off--><a href="https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-message.js"><!--/email_off-->helpers/get-message.js</a>.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <h2 class="faq-q" id="tracking">Does TimeToInbox use cookies or tracking?</h2>
+          <div class="faq-a">
+            <p>No. This site is static HTML and CSS with no JavaScript, cookies, analytics or third-party requests. It is hosted on GitHub Pages and served through Cloudflare, which processes visitor IP addresses. Read the <!--email_off--><a href="/privacy/"><!--/email_off-->privacy policy</a>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-about">
+          <p class="footer-title">TimeToInbox</p>
+          <p>A free guide to time to inbox (TTI) and email delivery speed from the <!--email_off--><a href="https://forwardemail.net"><!--/email_off-->Forward Email</a> team.</p>
+          <p><!--email_off--><a href="/about/"><!--/email_off-->About this site</a> &middot; <!--email_off--><a href="/privacy/"><!--/email_off-->Privacy policy</a></p>
+          <p>Contact: <!--email_off--><a href="https://github.com/forwardemail/timetoinbox.com/issues"><!--/email_off-->GitHub issues</a> &middot; <!--email_off--><a href="mailto:support@forwardemail.net">support@forwardemail.net</a><!--/email_off--></p>
+        </div>
+        <div class="footer-links">
+          <div class="link-group">
+            <p class="footer-title">Guides</p>
+            <ul>
+            <li><!--email_off--><a href="/what-is-time-to-inbox/"><!--/email_off-->What is TTI</a></li>
+            <li><!--email_off--><a href="/how-to-measure-time-to-inbox/"><!--/email_off-->Measure TTI</a></li>
+            <li><!--email_off--><a href="/what-affects-email-delivery-speed/"><!--/email_off-->Speed factors</a></li>
+            <li><!--email_off--><a href="/forward-email-time-to-inbox/"><!--/email_off-->Forward Email TTI</a></li>
+            <li><!--email_off--><a href="/faq/"><!--/email_off-->FAQ</a></li>
+            </ul>
+          </div>
+          <div class="link-group">
+            <p class="footer-title">Forward Email</p>
+            <ul>
+              <li><!--email_off--><a href="https://forwardemail.net"><!--/email_off-->Forward Email home</a></li>
+              <li><!--email_off--><a href="https://forwardemail.net/tti"><!--/email_off-->Live TTI measurements</a></li>
+              <li><!--email_off--><a href="https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js"><!--/email_off-->TTI monitor source code</a></li>
+              <li><!--email_off--><a href="https://forwardemail.net/faq"><!--/email_off-->Forward Email FAQ</a></li>
+              <li><!--email_off--><a href="https://forwardemail.net/private-business-email"><!--/email_off-->Plans and pricing</a></li>
+              <li><!--email_off--><a href="https://github.com/forwardemail"><!--/email_off-->Forward Email on GitHub</a></li>
+              <li><!--email_off--><a href="https://x.com/fwdemail"><!--/email_off-->Forward Email on X</a></li>
+              <li><!--email_off--><a href="https://www.youtube.com/forwardemail"><!--/email_off-->Forward Email on YouTube</a></li>
+            </ul>
+          </div>
+          <div class="link-group">
+            <p class="footer-title">Related sites</p>
+            <ul>
+              <li><!--email_off--><a href="https://alumniemail.com"><!--/email_off-->AlumniEmail.com</a></li>
+              <li><!--email_off--><a href="https://serverauditing.com"><!--/email_off-->ServerAuditing.com</a></li>
+              <li><!--email_off--><a href="https://sshmonitor.com"><!--/email_off-->SSHMonitor.com</a></li>
+              <li><!--email_off--><a href="https://sslmonitor.com"><!--/email_off-->SSLMonitor.com</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>TimeToInbox is run by the Forward Email team. Source code on <!--email_off--><a href="https://github.com/forwardemail/timetoinbox.com"><!--/email_off-->GitHub</a>.</p>
+        <!--email_off--><a class="edit-link" href="https://github.com/forwardemail/timetoinbox.com/blob/main/src/pages/faq.html"><!--/email_off--><svg aria-hidden="true" focusable="false" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>Edit this page on GitHub</span></a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

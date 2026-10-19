@@ -1,0 +1,87 @@
+<!--meta
+{
+  "order": 3,
+  "slug": "what-affects-email-delivery-speed",
+  "nav": "Speed factors",
+  "title": "What Slows Email Delivery? 8 Causes of Delayed Email",
+  "description": "Why email arrives late: greylisting, retry queues, SPF, DKIM and DMARC, reputation, rate limits, forwarding and mail apps.",
+  "h1": "What Affects Email Delivery Speed",
+  "lead": "Most delayed email is not lost. A server along the way returned a temporary error, and the message waited in a queue until the sender tried again. This page covers the common causes and what you can change.",
+  "about": [ { "@type": "Thing", "name": "Email delivery speed" }, { "@type": "Thing", "name": "Greylisting" }, { "@type": "Thing", "name": "Email authentication" } ],
+  "llms": "guide",
+  "llmsDesc": "Causes of slow email delivery (greylisting, retry queues, SPF/DKIM/DMARC, reputation, rate limits, volume, forwarding, mail app fetch schedules) with RFC and vendor sources."
+}
+-->
+<section class="section">
+  <div class="container narrow prose">
+    <h2 id="quick-answer">Quick answer</h2>
+    <p class="answer">Email is usually delayed by a temporary rejection (a 4xx SMTP reply) followed by a wait in the sender's retry queue. Greylisting, rate limits, failed DNS lookups during SPF checks, and a poor or unknown sender reputation all cause temporary rejections. How long the message then waits depends on the sending server's retry schedule.</p>
+
+    <div class="table-wrap">
+      <table>
+        <caption>Causes of slow email delivery at a glance</caption>
+        <thead>
+          <tr><th scope="col">Cause</th><th scope="col">What happens</th><th scope="col">What you can do</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><a href="#greylisting">Greylisting</a></td><td>First message from an unknown sender gets a 4xx reply and must be retried</td><td>Send from stable IP addresses and keep retry intervals short</td></tr>
+          <tr><td><a href="#retry-queues">Retry queues</a></td><td>Deferred mail waits minutes to hours before the next attempt</td><td>Check your server's backoff settings and queue size</td></tr>
+          <tr><td><a href="#authentication">SPF, DKIM, DMARC</a></td><td>Missing or failing authentication leads to deferral, spam filing or rejection</td><td>Publish SPF, sign with DKIM, publish DMARC</td></tr>
+          <tr><td><a href="#reputation">Reputation and rate limits</a></td><td>Receivers slow down unknown or high-volume senders</td><td>Warm up new IPs and domains, keep complaint rates low</td></tr>
+          <tr><td><a href="#volume">Your own sending volume</a></td><td>Large batches queue behind each other on your side</td><td>Send time-sensitive mail on its own stream</td></tr>
+          <tr><td><a href="#content">Content scanning and size</a></td><td>Large messages take longer to transfer and scan</td><td>Link to large files instead of attaching them</td></tr>
+          <tr><td><a href="#forwarding">Forwarding hops</a></td><td>Each forward is a new delivery that can be deferred again</td><td>Deliver straight to the final mailbox where possible</td></tr>
+          <tr><td><a href="#mail-apps">Mail app fetch schedule</a></td><td>The message is in the mailbox, but the app has not checked yet</td><td>Use push or IMAP IDLE</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="greylisting">1. Greylisting</h2>
+    <p>Greylisting is an anti-spam technique where a receiving server temporarily rejects mail from a sender it does not know yet. RFC 6647 describes it as "rejecting mail from unfamiliar sources with a 'transient (soft) fail' (4xx) [SMTP] error code" (<a href="https://www.rfc-editor.org/rfc/rfc6647">RFC 6647</a>). A real mail server retries and gets through. Many spam tools do not retry.</p>
+    <p>The delay you see is the time until the sender's next attempt. RFC 6647 notes that "some popular MTAs do not retry failed delivery attempts for an hour or more," and that senders with several outbound servers can be greylisted again when a retry comes from a different IP address.</p>
+    <p>Forward Email documents its own policy: the first message from a new sender (keyed by root domain or IP address) is rejected with a 450 code until 5 minutes have passed since the first attempt, the record is kept for 30 days, and senders on its allowlist skip greylisting (<a href="https://forwardemail.net/faq#do-you-have-a-greylist">Forward Email FAQ: Do you have a greylist</a>).</p>
+    <p><strong>What you can do:</strong> send from a small, stable set of IP addresses, set reverse DNS (PTR) for each one, and make sure your server retries within minutes rather than hours.</p>
+
+    <h2 id="retry-queues">2. Retry queues after temporary failures</h2>
+    <p>Any 4xx reply puts the message back in the sender's queue. RFC 5321 says "the retry interval SHOULD be at least 30 minutes" and that the give-up time "generally needs to be at least 4-5 days" (<a href="https://www.rfc-editor.org/rfc/rfc5321#section-4.5.4.1">RFC 5321, section 4.5.4.1</a>).</p>
+    <p>Real servers are often faster. Postfix, for example, defaults to waiting at least 300 seconds and at most 4000 seconds between attempts for a deferred message, scans its deferred queue every 300 seconds, and returns a message as undeliverable after 5 days (<a href="https://www.postfix.org/postconf.5.html#minimal_backoff_time">Postfix postconf(5)</a>).</p>
+    <p>So a single temporary failure on a default Postfix server adds at least about 5 minutes, and repeated failures stretch toward an hour between attempts.</p>
+    <p><strong>What you can do:</strong> watch your deferred queue, read the 4xx replies in your logs to find the cause, and fix that cause rather than only shortening retry times.</p>
+
+    <h2 id="authentication">3. SPF, DKIM and DMARC</h2>
+    <p>Receiving servers check whether a message is authorized by the sender's domain. SPF lists the servers allowed to send for a domain, DKIM adds a signature that proves the domain sent the message, and DMARC tells receivers what to do when those checks fail.</p>
+    <p>Gmail requires every sender to set up SPF or DKIM, to have valid forward and reverse DNS for sending IPs, and to use TLS. Senders of more than 5,000 messages a day to Gmail also need SPF, DKIM and DMARC. Google says the guidelines help "prevent Gmail from limiting sending rates, blocking messages, or marking messages as spam" (<a href="https://support.google.com/a/answer/81126">Google email sender guidelines</a>).</p>
+    <p>DNS problems during these checks can also delay mail. If an SPF check hits a temporary DNS error, RFC 7208 says the receiver can accept the message or temporarily reject it, and a rejection "SHOULD use an SMTP reply code of 451" (<a href="https://www.rfc-editor.org/rfc/rfc7208#section-8.6">RFC 7208, section 8.6</a>). The message then waits for a retry.</p>
+    <p><strong>What you can do:</strong> publish an SPF record that lists every service that sends for your domain, sign all mail with DKIM, publish a DMARC record, and use reliable DNS hosting. Forward Email has setup guides for <a href="https://forwardemail.net/faq#how-do-i-set-up-spf-for-forward-email">SPF</a>, <a href="https://forwardemail.net/faq#how-do-i-set-up-dkim-for-forward-email">DKIM</a> and <a href="https://forwardemail.net/faq#how-do-i-set-up-dmarc-for-forward-email">DMARC</a>.</p>
+
+    <h2 id="reputation">4. Sender reputation and rate limits</h2>
+    <p>Mailbox providers limit how much mail they accept from each sender, and the limits are lower for senders they do not know or do not trust. Extra mail gets a temporary rejection and waits in the sender's queue.</p>
+    <p>Forward Email publishes its inbound limits as an example: senders that are not on its allowlist can deliver up to 1000 messages per day per sender and recipient domain into its mailboxes, with a burst limit of 50 messages per sender and domain per minute, while large providers such as gmail.com and allowlisted senders have higher limits (<a href="https://forwardemail.net/faq#do-you-have-rate-limiting">Forward Email FAQ: Do you have rate limiting</a>).</p>
+    <p><strong>What you can do:</strong> raise volume on new IP addresses and domains gradually, keep spam complaints low (Gmail asks senders to stay below 0.3%), and remove addresses that bounce.</p>
+
+    <h2 id="volume">5. Your own sending volume</h2>
+    <p>Delays also start on your side. A newsletter to many recipients can fill your outbound queue, and a password reset sent at the same moment waits behind it. Sending services also slow down accounts that send unusual volumes. Forward Email, for example, slows outbound sending with a 421 reply when too many of an account's recent messages are still waiting in the queue (<a href="https://forwardemail.net/faq#what-are-your-outbound-smtp-limits">Forward Email FAQ: outbound SMTP limits</a>).</p>
+    <p><strong>What you can do:</strong> send transactional mail (sign-ins, resets, receipts) through a separate stream or server from bulk mail, so a large send cannot hold it up.</p>
+
+    <h2 id="content">6. Content scanning and message size</h2>
+    <p>Receiving servers scan messages for spam and malware before they file them. Bigger messages take longer to upload and to scan, and a message that looks suspicious can be held for more checks or filed as spam. Spam filing does not change the delivery time, but to the recipient it looks the same as a message that never came.</p>
+    <p><strong>What you can do:</strong> keep transactional emails small and plain, and link to large files instead of attaching them.</p>
+
+    <h2 id="forwarding">7. Forwarding hops</h2>
+    <p>When an address forwards to another mailbox, the forwarding server receives the message and then sends it again to the final provider. That second delivery can be greylisted, rate limited or deferred on its own. Forwarding can also break SPF, because the forwarding server is not listed in the original sender's SPF record. Forward Email re-seals forwarded messages with ARC, and rewrites the From header only when the sender's DMARC check did not pass and no DKIM signature aligns with the From header (<a href="https://forwardemail.net/faq#how-do-you-handle-email-delivery-issues">Forward Email FAQ: How do you handle email delivery issues</a>).</p>
+    <p>Forward Email measures direct and forwarded delivery separately on its <a href="https://forwardemail.net/tti">live TTI page</a>, so you can see the cost of the extra hop for each provider.</p>
+
+    <h2 id="mail-apps">8. Mail apps that check on a timer</h2>
+    <p>Sometimes the message is already in the mailbox and the app has not shown it yet. Apps that use push notifications or the IMAP IDLE command (<a href="https://www.rfc-editor.org/rfc/rfc2177">RFC 2177</a>) show new mail right away. Apps that fetch on a schedule, for example every 15 minutes, show it on the next fetch. Check webmail to tell this case apart from a real delivery delay.</p>
+
+    <h2 id="sources">Sources for this page</h2>
+    <ul class="sources">
+      <li><a href="https://www.rfc-editor.org/rfc/rfc5321#section-4.5.4.1">RFC 5321: Simple Mail Transfer Protocol, section 4.5.4.1</a></li>
+      <li><a href="https://www.rfc-editor.org/rfc/rfc6647">RFC 6647: Email Greylisting</a></li>
+      <li><a href="https://www.rfc-editor.org/rfc/rfc7208#section-8.6">RFC 7208: Sender Policy Framework, section 8.6</a></li>
+      <li><a href="https://www.postfix.org/postconf.5.html#minimal_backoff_time">Postfix configuration parameters</a></li>
+      <li><a href="https://support.google.com/a/answer/81126">Google: Email sender guidelines</a></li>
+      <li><a href="https://forwardemail.net/faq">Forward Email FAQ</a></li>
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,79 @@
+<!--meta
+{
+  "order": 1,
+  "slug": "what-is-time-to-inbox",
+  "nav": "What is TTI",
+  "title": "What Is Time to Inbox (TTI)? Definition and Metrics",
+  "description": "Time to inbox (TTI) is the time from sending an email to its arrival in the inbox. Definition and how it differs from other metrics.",
+  "h1": "What Is Time to Inbox (TTI)?",
+  "lead": "Time to inbox is the time it takes for an email to go from the sender to the recipient's inbox. It is a speed metric: it tells you how long delivery took, not whether the message was opened.",
+  "about": [ { "@type": "Thing", "name": "Time to inbox" }, { "@type": "Thing", "name": "Email deliverability" } ],
+  "llms": "guide",
+  "llmsDesc": "Definition of time to inbox, where the measurement starts and stops, and a comparison table with delivery rate, inbox placement, bounce rate and time to acceptance."
+}
+-->
+<section class="section">
+  <div class="container narrow prose">
+    <h2 id="definition">Time to inbox definition</h2>
+    <p class="answer">Time to inbox (TTI) is the elapsed time between sending an email and the moment the message is stored in the recipient's inbox, where the recipient can read it. It is usually measured in seconds.</p>
+    <p>Postmark, an email delivery service that publishes TTI for its own sending, puts it this way: "Time to Inbox (TTI) is the length of time it takes from when an email is sent from a client until it is logged as delivered" (<a href="https://tti.postmarkapp.com/">Postmark TTI page</a>). Postmark chose this metric over "time to delivery" or "time to acceptance" because those do not include delays caused by mailbox provider issues or throttling (<a href="https://postmarkapp.com/blog/delivery-performance-and-transparency">Postmark blog</a>).</p>
+    <p>Forward Email uses the same idea in its public monitor: it sends a test message, then checks the recipient's mailbox over IMAP until the message appears, and records the difference (<a href="/forward-email-time-to-inbox/">how the Forward Email monitor works</a>).</p>
+
+    <h2 id="start-and-stop">Where the clock starts and stops</h2>
+    <p>The clock starts when the message leaves the sender. In practice that is the moment your application hands the message to an SMTP server or calls a sending API.</p>
+    <p>The clock stops when the message is in the recipient's mailbox and can be read over IMAP, POP3 or webmail. Between those two points the message can wait in several places:</p>
+    <ol>
+      <li><strong>The sending server's queue.</strong> The server looks up the recipient domain's MX records and connects to the receiving server. If that attempt fails with a temporary error, the message waits for a retry.</li>
+      <li><strong>The receiving server.</strong> It checks the sender (greylisting, rate limits, blocklists), the authentication results (SPF, DKIM, DMARC) and the content (spam and virus scanning). Any of these can defer the message.</li>
+      <li><strong>Forwarding hops.</strong> If the address forwards to another mailbox, the message is sent again from the forwarding server to the final provider, which adds a second trip through steps 1 and 2.</li>
+      <li><strong>Mailbox storage.</strong> The receiving system files the message in the inbox or in another folder such as spam.</li>
+    </ol>
+    <p>The time a mail app takes to show the message is usually left out, because it depends on the reader's device. Apps that use push or the IMAP IDLE command (<a href="https://www.rfc-editor.org/rfc/rfc2177">RFC 2177</a>) show new mail as it arrives. Apps that check for mail on a schedule show it on the next check.</p>
+
+    <h2 id="compared">Time to inbox compared with other email metrics</h2>
+    <p>TTI answers "how long did it take?". The other common deliverability metrics answer "did it arrive?" and "where did it land?".</p>
+    <div class="table-wrap">
+      <table>
+        <caption>Email delivery metrics and what each one measures</caption>
+        <thead>
+          <tr><th scope="col">Metric</th><th scope="col">What it measures</th><th scope="col">What it does not show</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Time to inbox (TTI)</td><td>Seconds from send until the message is in the recipient's mailbox</td><td>Whether the message landed in the inbox or the spam folder, unless the test checks the folder</td></tr>
+          <tr><td>Time to acceptance</td><td>Seconds until the receiving server accepts the message with a 250 reply</td><td>Delays inside the receiving provider after it accepts the message</td></tr>
+          <tr><td>Delivery rate</td><td>Share of messages accepted by receiving servers</td><td>Speed, and whether accepted mail reached the inbox</td></tr>
+          <tr><td>Inbox placement rate</td><td>Share of messages that land in the inbox instead of spam or another tab</td><td>Speed</td></tr>
+          <tr><td>Bounce rate</td><td>Share of messages rejected, as hard (permanent) or soft (temporary) bounces</td><td>Messages that are delayed but still delivered</td></tr>
+          <tr><td>Spam complaint rate</td><td>Share of delivered messages that recipients mark as spam</td><td>Speed and placement of messages nobody reported</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>A sender can have a high delivery rate and a poor TTI at the same time. Greylisted mail, for example, is accepted in the end, so it counts as delivered, but it can arrive many minutes late.</p>
+
+    <h2 id="direct-vs-forwarded">Direct and forwarded time to inbox</h2>
+    <p>Direct TTI covers a message sent straight to the recipient's provider. Forwarded TTI covers a message sent to an address that forwards it to another mailbox, for example a custom domain address that forwards to Gmail. The forwarded path has an extra SMTP hop, so it gives the receiving provider a second chance to defer the message. Forward Email publishes both numbers for each provider it tests on its <a href="https://forwardemail.net/tti">live TTI page</a>.</p>
+
+    <h2 id="good-tti">What is a good time to inbox?</h2>
+    <p>There is no standard target. Healthy delivery between well-configured servers usually takes a few seconds, and anything that involves a retry takes minutes. As a reference point, Forward Email's monitor emails its engineers when a test message takes 10 seconds or longer to arrive, or does not arrive within the one-minute polling window (<a href="https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js">jobs/tti.js</a>).</p>
+    <p>The right threshold for you depends on the message. A sign-in code that expires quickly needs a tighter limit than a weekly report.</p>
+
+    <h2 id="why">Why time to inbox matters</h2>
+    <ul>
+      <li><strong>Sign-in and password reset emails.</strong> The person is waiting on the screen, and many links and codes expire after a short time.</li>
+      <li><strong>Two-factor codes by email.</strong> A late code can expire before it arrives, which forces a resend and adds another wait.</li>
+      <li><strong>Receipts and order confirmations.</strong> When they arrive late, people contact support to ask whether the order went through.</li>
+      <li><strong>Alerts and incident notices.</strong> Monitoring email loses its value if it arrives after someone has already noticed the problem.</li>
+      <li><strong>Conversations.</strong> Slow delivery breaks the flow of a support thread or a mailing list discussion. RFC 6647 notes that greylisting delays can be costly when delivery is time critical.</li>
+    </ul>
+    <p>Next, see <a href="/how-to-measure-time-to-inbox/">how to measure time to inbox yourself</a> or <a href="/what-affects-email-delivery-speed/">what affects email delivery speed</a>.</p>
+
+    <h2 id="sources">Sources for this page</h2>
+    <ul class="sources">
+      <li><a href="https://tti.postmarkapp.com/">Postmark: Time to Inbox</a></li>
+      <li><a href="https://postmarkapp.com/blog/delivery-performance-and-transparency">Postmark: delivery performance and transparency</a></li>
+      <li><a href="https://forwardemail.net/tti">Forward Email: Time to Inbox</a></li>
+      <li><a href="https://www.rfc-editor.org/rfc/rfc2177">RFC 2177: IMAP4 IDLE command</a></li>
+      <li><a href="https://www.rfc-editor.org/rfc/rfc6647">RFC 6647: Email Greylisting, An Applicability Statement for SMTP</a></li>
+    </ul>
+  </div>
+</section>

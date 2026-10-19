@@ -1,0 +1,6 @@
+Contact: mailto:security@forwardemail.net
+Encryption: https://forwardemail.net/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.asc
+Policy: https://forwardemail.net/en/security
+Preferred-Languages: en
+Canonical: https://timetoinbox.com/.well-known/security.txt
+Expires: 2027-09-30T00:00:00.000Z

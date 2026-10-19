@@ -1,0 +1,568 @@
+# TimeToInbox: full text
+
+> TimeToInbox explains time to inbox (TTI), the time from sending an email to its arrival in the recipient's inbox: what it measures, how to measure it yourself, what slows delivery down, and how Forward Email publishes its own TTI measurements and the public source code behind them.
+
+## Time to Inbox (TTI): How Fast Email Reaches the Inbox
+
+> Time to inbox is the time between sending an email and its arrival in the recipient's inbox. These guides explain what it measures, how to measure it yourself, and what slows delivery down.
+
+Source: https://timetoinbox.com/
+
+### What is time to inbox?
+
+Time to inbox (TTI) is the number of seconds between the moment an email is sent and the moment it lands in the recipient's inbox. A healthy TTI is a few seconds. Minutes or hours usually point to a queue, a retry, or a filter on the way.
+
+Postmark, which publishes TTI for its own sending, defines it as "the length of time it takes from when an email is sent from a client until it is logged as delivered" ([Postmark TTI page](https://tti.postmarkapp.com/)). Forward Email measures the same thing by sending test messages to real mailboxes and timing how long each one takes to show up over IMAP.
+
+TTI matters most for email that someone is waiting for:
+
+- password reset links and sign-in links
+- one-time codes for two-factor authentication
+- account verification and order confirmation emails
+- monitoring alerts and incident notifications
+- replies in a live conversation or support thread
+
+[Read the full definition of time to inbox](https://timetoinbox.com/what-is-time-to-inbox/), including how it differs from delivery rate and inbox placement.
+
+*Where the seconds go between send and inbox.*
+
+### Time to inbox guides
+
+- **[What is time to inbox](https://timetoinbox.com/what-is-time-to-inbox/)**: The definition, where the clock starts and stops, and how TTI compares with delivery rate, inbox placement and bounce rate.
+- **[How to measure TTI](https://timetoinbox.com/how-to-measure-time-to-inbox/)**: Read delays from Received headers, or set up seed mailboxes and a script that sends a test email and polls IMAP until it arrives.
+- **[What slows email down](https://timetoinbox.com/what-affects-email-delivery-speed/)**: Greylisting, retry queues, SPF, DKIM and DMARC, sender reputation, rate limits, forwarding hops and mail apps that fetch on a schedule.
+- **[Forward Email's TTI monitor](https://timetoinbox.com/forward-email-time-to-inbox/)**: How Forward Email measures direct and forwarded delivery times to Gmail, Apple iCloud, Yahoo/AOL and its own mailboxes, with public source code.
+- **[Time to inbox FAQ](https://timetoinbox.com/faq/)**: Short answers about normal delivery times, delayed verification emails, greylisting, and why one provider can be slower than another.
+- **[About TimeToInbox](https://timetoinbox.com/about/)**: Who runs this site, how to report a mistake, where the source code lives, and what data the site collects (none).
+
+### Common causes of slow delivery, with numbers
+
+Most delays come from a temporary rejection followed by a retry. The retry schedule of the sending server then decides how long the message waits. These figures come from standards and published configuration defaults.
+
+*Delay sources and their documented timings*
+
+| Cause | Documented timing | Source |
+| --- | --- | --- |
+| Retry after a temporary failure (any SMTP sender) | Retry interval "SHOULD be at least 30 minutes"; give up after at least 4 to 5 days | [RFC 5321, section 4.5.4.1](https://www.rfc-editor.org/rfc/rfc5321#section-4.5.4.1) |
+| Postfix deferred queue | Retries between 300 seconds and 4000 seconds apart; queue scanned every 300 seconds; message returned after 5 days | [Postfix postconf(5)](https://www.postfix.org/postconf.5.html#minimal_backoff_time) |
+| Greylisting at Forward Email | First message from a new sender is deferred with a 450 code until 5 minutes have passed | [Forward Email FAQ](https://forwardemail.net/faq#do-you-have-a-greylist) |
+| Forward Email TTI alert threshold | Engineers are emailed when a test delivery takes 10 seconds or longer, or does not arrive | [jobs/tti.js](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js) |
+
+A message that is greylisted by the receiver and then retried on a 30 minute schedule arrives about 30 minutes late, even though nothing is wrong with it. See [what affects email delivery speed](https://timetoinbox.com/what-affects-email-delivery-speed/) for each cause and what you can change.
+
+### Forward Email publishes its time to inbox
+
+Forward Email runs a monitor that sends test emails to mailboxes at major email providers and records how long each one takes to arrive. The results are public on the [Forward Email time to inbox page](https://forwardemail.net/tti), with a 24-hour chart, and the code that produces them is [public on GitHub](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js).
+
+Each run measures two paths per provider: a direct message, and a message sent through a forwarding address that ends up in the same mailbox. The numbers change with every test run, so this site links to the live page instead of copying values that would go stale.
+
+[Read how the Forward Email TTI monitor works](https://timetoinbox.com/forward-email-time-to-inbox/)
+
+### Email from the team that publishes its TTI
+
+Forward Email is open-source email hosting and forwarding with IMAP, POP3, SMTP, CalDAV and CardDAV support. Its free plan forwards email for your domain once you add MX and TXT DNS records, with no account needed.
+
+[Get started with Forward Email](https://forwardemail.net)
+
+[View live TTI results](https://forwardemail.net/tti)
+
+---
+
+## What Is Time to Inbox (TTI)?
+
+> Time to inbox is the time it takes for an email to go from the sender to the recipient's inbox. It is a speed metric: it tells you how long delivery took, not whether the message was opened.
+
+Source: https://timetoinbox.com/what-is-time-to-inbox/
+
+### Time to inbox definition
+
+Time to inbox (TTI) is the elapsed time between sending an email and the moment the message is stored in the recipient's inbox, where the recipient can read it. It is usually measured in seconds.
+
+Postmark, an email delivery service that publishes TTI for its own sending, puts it this way: "Time to Inbox (TTI) is the length of time it takes from when an email is sent from a client until it is logged as delivered" ([Postmark TTI page](https://tti.postmarkapp.com/)). Postmark chose this metric over "time to delivery" or "time to acceptance" because those do not include delays caused by mailbox provider issues or throttling ([Postmark blog](https://postmarkapp.com/blog/delivery-performance-and-transparency)).
+
+Forward Email uses the same idea in its public monitor: it sends a test message, then checks the recipient's mailbox over IMAP until the message appears, and records the difference ([how the Forward Email monitor works](https://timetoinbox.com/forward-email-time-to-inbox/)).
+
+### Where the clock starts and stops
+
+The clock starts when the message leaves the sender. In practice that is the moment your application hands the message to an SMTP server or calls a sending API.
+
+The clock stops when the message is in the recipient's mailbox and can be read over IMAP, POP3 or webmail. Between those two points the message can wait in several places:
+
+1. **The sending server's queue.** The server looks up the recipient domain's MX records and connects to the receiving server. If that attempt fails with a temporary error, the message waits for a retry.
+2. **The receiving server.** It checks the sender (greylisting, rate limits, blocklists), the authentication results (SPF, DKIM, DMARC) and the content (spam and virus scanning). Any of these can defer the message.
+3. **Forwarding hops.** If the address forwards to another mailbox, the message is sent again from the forwarding server to the final provider, which adds a second trip through steps 1 and 2.
+4. **Mailbox storage.** The receiving system files the message in the inbox or in another folder such as spam.
+
+The time a mail app takes to show the message is usually left out, because it depends on the reader's device. Apps that use push or the IMAP IDLE command ([RFC 2177](https://www.rfc-editor.org/rfc/rfc2177)) show new mail as it arrives. Apps that check for mail on a schedule show it on the next check.
+
+### Time to inbox compared with other email metrics
+
+TTI answers "how long did it take?". The other common deliverability metrics answer "did it arrive?" and "where did it land?".
+
+*Email delivery metrics and what each one measures*
+
+| Metric | What it measures | What it does not show |
+| --- | --- | --- |
+| Time to inbox (TTI) | Seconds from send until the message is in the recipient's mailbox | Whether the message landed in the inbox or the spam folder, unless the test checks the folder |
+| Time to acceptance | Seconds until the receiving server accepts the message with a 250 reply | Delays inside the receiving provider after it accepts the message |
+| Delivery rate | Share of messages accepted by receiving servers | Speed, and whether accepted mail reached the inbox |
+| Inbox placement rate | Share of messages that land in the inbox instead of spam or another tab | Speed |
+| Bounce rate | Share of messages rejected, as hard (permanent) or soft (temporary) bounces | Messages that are delayed but still delivered |
+| Spam complaint rate | Share of delivered messages that recipients mark as spam | Speed and placement of messages nobody reported |
+
+A sender can have a high delivery rate and a poor TTI at the same time. Greylisted mail, for example, is accepted in the end, so it counts as delivered, but it can arrive many minutes late.
+
+### Direct and forwarded time to inbox
+
+Direct TTI covers a message sent straight to the recipient's provider. Forwarded TTI covers a message sent to an address that forwards it to another mailbox, for example a custom domain address that forwards to Gmail. The forwarded path has an extra SMTP hop, so it gives the receiving provider a second chance to defer the message. Forward Email publishes both numbers for each provider it tests on its [live TTI page](https://forwardemail.net/tti).
+
+### What is a good time to inbox?
+
+There is no standard target. Healthy delivery between well-configured servers usually takes a few seconds, and anything that involves a retry takes minutes. As a reference point, Forward Email's monitor emails its engineers when a test message takes 10 seconds or longer to arrive, or does not arrive within the one-minute polling window ([jobs/tti.js](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js)).
+
+The right threshold for you depends on the message. A sign-in code that expires quickly needs a tighter limit than a weekly report.
+
+### Why time to inbox matters
+
+- **Sign-in and password reset emails.** The person is waiting on the screen, and many links and codes expire after a short time.
+- **Two-factor codes by email.** A late code can expire before it arrives, which forces a resend and adds another wait.
+- **Receipts and order confirmations.** When they arrive late, people contact support to ask whether the order went through.
+- **Alerts and incident notices.** Monitoring email loses its value if it arrives after someone has already noticed the problem.
+- **Conversations.** Slow delivery breaks the flow of a support thread or a mailing list discussion. RFC 6647 notes that greylisting delays can be costly when delivery is time critical.
+
+Next, see [how to measure time to inbox yourself](https://timetoinbox.com/how-to-measure-time-to-inbox/) or [what affects email delivery speed](https://timetoinbox.com/what-affects-email-delivery-speed/).
+
+### Sources for this page
+
+- [Postmark: Time to Inbox](https://tti.postmarkapp.com/)
+- [Postmark: delivery performance and transparency](https://postmarkapp.com/blog/delivery-performance-and-transparency)
+- [Forward Email: Time to Inbox](https://forwardemail.net/tti)
+- [RFC 2177: IMAP4 IDLE command](https://www.rfc-editor.org/rfc/rfc2177)
+- [RFC 6647: Email Greylisting, An Applicability Statement for SMTP](https://www.rfc-editor.org/rfc/rfc6647)
+
+---
+
+## How to Measure Time to Inbox
+
+> You can check one message by reading its Received headers, or measure TTI continuously with seed mailboxes and a small script that sends a test email and watches the inbox over IMAP.
+
+Source: https://timetoinbox.com/how-to-measure-time-to-inbox/
+
+### Quick answer
+
+To measure time to inbox, send a test email with a unique Message-ID to a mailbox you control, poll that mailbox over IMAP until the message appears, and subtract the send time from the arrival time. Take both timestamps from the same clock.
+
+For a one-off check of a message you already received, read its Received headers instead. They show when each server along the way handled the message.
+
+### Method 1: read the Received headers of one message
+
+Every SMTP server that handles a message adds a `Received:` line at the top of the headers, with a timestamp ([RFC 5321, section 4.4](https://www.rfc-editor.org/rfc/rfc5321#section-4.4)). Reading them from the bottom up shows the path of the message and the gap between hops.
+
+1. Open the full headers. In Gmail, open the message menu and choose **Show original**. In Apple Mail, choose **View -> Message -> All Headers**. Most other apps have an option named "View source" or similar.
+2. Find the lowest `Received:` line. That is the first server that accepted the message.
+3. Compare its timestamp with the `Date:` header (the time the sender's app created the message) and with each `Received:` line above it.
+4. A large gap between two lines tells you which hop held the message.
+
+An example with made-up hosts and times, shortened for reading:
+
+```text
+Received: from mx.example.net by mailbox.example.net; Tue, 3 Mar 2026 10:07:02 +0000
+Received: from smtp.example.com by mx.example.net; Tue, 3 Mar 2026 10:07:01 +0000
+Received: from app.example.com by smtp.example.com; Tue, 3 Mar 2026 10:01:58 +0000
+Date: Tue, 3 Mar 2026 10:01:57 +0000
+```
+
+Here the message left `smtp.example.com` about 5 minutes after it arrived there. A gap like this often means the receiving server deferred the first attempt (for example with greylisting) and the sender retried later.
+
+The [Google Admin Toolbox Messageheader tool](https://toolbox.googleapps.com/apps/messageheader/) parses pasted headers and shows the delay at each hop.
+
+**Limits of this method:** each timestamp comes from a different server's clock, so small differences can be clock skew. Forward Email's monitor code makes the same point and does not rely on Received headers or the Date header for this reason ([helpers/get-message.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-message.js)). Headers also only show what happened before the final mailbox stored the message.
+
+### Method 2: measure time to inbox with seed mailboxes
+
+A seed mailbox is a mailbox you own at a provider your recipients use, such as Gmail, Outlook.com, Yahoo or iCloud. Sending regular test messages to seed mailboxes gives you a TTI series you can graph and alert on.
+
+1. **Create a seed mailbox at each provider**: Open one account per provider you care about and turn on IMAP access. Most providers require an app password for IMAP. Use these accounts only for testing so the script can read and delete everything in them.
+2. **Send from your real sending setup**: Send the test through the same server, domain, SPF, DKIM and DMARC setup your real mail uses. A test from a different server measures a different path.
+3. **Give each test message a unique Message-ID**: Generate a random Message-ID for every test and record the time just before you send. The ID lets the script find this exact message among older tests.
+4. **Poll the inbox over IMAP**: Keep an IMAP connection open, send a NOOP so the server reports new messages, and look for the Message-ID. Record the arrival time when it appears. Stop after a timeout, such as one minute, and count the message as late.
+5. **Use one clock for both timestamps**: Take the send time and the arrival time from the machine running the script. Provider timestamps and Received headers come from other clocks and can be off by seconds.
+6. **Repeat on a schedule and alert on outliers**: Run the test every few minutes, store the results, and alert when a delivery passes your threshold or never arrives. Delete old test messages so the inbox stays small.
+
+### Example script (Node.js)
+
+This short script follows the steps above for one seed mailbox. It uses the [Nodemailer](https://nodemailer.com/) and [ImapFlow](https://imapflow.com/) packages (`npm install nodemailer imapflow`) and reads credentials from environment variables. It is a starting point, not a production monitor.
+
+```js
+// tti-check.mjs: send one test email and time its arrival over IMAP
+import { randomUUID } from 'node:crypto';
+import { setTimeout as sleep } from 'node:timers/promises';
+import nodemailer from 'nodemailer';
+import { ImapFlow } from 'imapflow';
+
+const env = process.env;
+
+const smtp = nodemailer.createTransport({
+  host: env.SMTP_HOST,
+  port: 465,
+  secure: true,
+  auth: { user: env.SMTP_USER, pass: env.SMTP_PASS }
+});
+
+const imap = new ImapFlow({
+  host: env.IMAP_HOST,
+  port: 993,
+  secure: true,
+  auth: { user: env.IMAP_USER, pass: env.IMAP_PASS },
+  logger: false
+});
+
+const id = `${randomUUID()}@${env.SMTP_USER.split('@')[1]}`;
+
+await imap.connect();
+await imap.mailboxOpen('INBOX');
+
+const sentAt = Date.now();
+await smtp.sendMail({
+  from: env.SMTP_USER,
+  to: env.IMAP_USER,
+  subject: 'Time to inbox test',
+  text: 'This is an automated time to inbox test.',
+  messageId: `<${id}>`
+});
+
+let receivedAt = 0;
+while (!receivedAt && Date.now() - sentAt < 60_000) {
+  await imap.noop(); // ask the server to report new messages
+  if (imap.mailbox.exists > 0) {
+    for await (const msg of imap.fetch('1:*', { headers: ['message-id'] })) {
+      if (msg.headers?.toString().includes(id)) receivedAt = Date.now();
+    }
+  }
+  if (!receivedAt) await sleep(250);
+}
+
+await imap.logout();
+console.log(receivedAt ? `TTI: ${(receivedAt - sentAt) / 1000}s` : 'Not received within 60s');
+```
+
+Run it from cron or a scheduler every few minutes and send the output to the system you already use for metrics. To compare providers, run one copy per seed mailbox.
+
+For a complete, production example, read Forward Email's monitor, [jobs/tti.js](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js). It tests several providers in parallel, measures direct and forwarded delivery, keeps two IMAP connections open per provider, and emails its team when a delivery is slow. [This page explains how it works](https://timetoinbox.com/forward-email-time-to-inbox/).
+
+### Tips for accurate results
+
+- **Check the folder.** The example only watches the inbox. A message filed as spam never shows up there, so also watch the spam folder if you want to tell "slow" apart from "filtered".
+- **Vary the content a little.** Forward Email's monitor generates random subject lines and body text for each test ([jobs/tti.js](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js)), so the messages do not look like exact duplicates.
+- **Keep test volume low.** A test every few minutes per mailbox is enough to spot problems. Postmark runs its TTI checks every five minutes ([Postmark blog](https://postmarkapp.com/blog/why-we-removed-inbox-delivery-tests-from-our-status-page)).
+- **Report the median and the slow tail.** One slow message can be a one-off retry. A rising median points to a lasting problem.
+
+### Sources for this page
+
+- [RFC 5321, section 4.4: trace information (Received headers)](https://www.rfc-editor.org/rfc/rfc5321#section-4.4)
+- [Forward Email: jobs/tti.js](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js) and [helpers/get-message.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-message.js)
+- [Postmark: why we removed inbox delivery tests from our status page](https://postmarkapp.com/blog/why-we-removed-inbox-delivery-tests-from-our-status-page)
+- [Google Admin Toolbox: Messageheader](https://toolbox.googleapps.com/apps/messageheader/)
+
+---
+
+## What Affects Email Delivery Speed
+
+> Most delayed email is not lost. A server along the way returned a temporary error, and the message waited in a queue until the sender tried again. This page covers the common causes and what you can change.
+
+Source: https://timetoinbox.com/what-affects-email-delivery-speed/
+
+### Quick answer
+
+Email is usually delayed by a temporary rejection (a 4xx SMTP reply) followed by a wait in the sender's retry queue. Greylisting, rate limits, failed DNS lookups during SPF checks, and a poor or unknown sender reputation all cause temporary rejections. How long the message then waits depends on the sending server's retry schedule.
+
+*Causes of slow email delivery at a glance*
+
+| Cause | What happens | What you can do |
+| --- | --- | --- |
+| [Greylisting](https://timetoinbox.com/what-affects-email-delivery-speed/#greylisting) | First message from an unknown sender gets a 4xx reply and must be retried | Send from stable IP addresses and keep retry intervals short |
+| [Retry queues](https://timetoinbox.com/what-affects-email-delivery-speed/#retry-queues) | Deferred mail waits minutes to hours before the next attempt | Check your server's backoff settings and queue size |
+| [SPF, DKIM, DMARC](https://timetoinbox.com/what-affects-email-delivery-speed/#authentication) | Missing or failing authentication leads to deferral, spam filing or rejection | Publish SPF, sign with DKIM, publish DMARC |
+| [Reputation and rate limits](https://timetoinbox.com/what-affects-email-delivery-speed/#reputation) | Receivers slow down unknown or high-volume senders | Warm up new IPs and domains, keep complaint rates low |
+| [Your own sending volume](https://timetoinbox.com/what-affects-email-delivery-speed/#volume) | Large batches queue behind each other on your side | Send time-sensitive mail on its own stream |
+| [Content scanning and size](https://timetoinbox.com/what-affects-email-delivery-speed/#content) | Large messages take longer to transfer and scan | Link to large files instead of attaching them |
+| [Forwarding hops](https://timetoinbox.com/what-affects-email-delivery-speed/#forwarding) | Each forward is a new delivery that can be deferred again | Deliver straight to the final mailbox where possible |
+| [Mail app fetch schedule](https://timetoinbox.com/what-affects-email-delivery-speed/#mail-apps) | The message is in the mailbox, but the app has not checked yet | Use push or IMAP IDLE |
+
+### 1. Greylisting
+
+Greylisting is an anti-spam technique where a receiving server temporarily rejects mail from a sender it does not know yet. RFC 6647 describes it as "rejecting mail from unfamiliar sources with a 'transient (soft) fail' (4xx) [SMTP] error code" ([RFC 6647](https://www.rfc-editor.org/rfc/rfc6647)). A real mail server retries and gets through. Many spam tools do not retry.
+
+The delay you see is the time until the sender's next attempt. RFC 6647 notes that "some popular MTAs do not retry failed delivery attempts for an hour or more," and that senders with several outbound servers can be greylisted again when a retry comes from a different IP address.
+
+Forward Email documents its own policy: the first message from a new sender (keyed by root domain or IP address) is rejected with a 450 code until 5 minutes have passed since the first attempt, the record is kept for 30 days, and senders on its allowlist skip greylisting ([Forward Email FAQ: Do you have a greylist](https://forwardemail.net/faq#do-you-have-a-greylist)).
+
+**What you can do:** send from a small, stable set of IP addresses, set reverse DNS (PTR) for each one, and make sure your server retries within minutes rather than hours.
+
+### 2. Retry queues after temporary failures
+
+Any 4xx reply puts the message back in the sender's queue. RFC 5321 says "the retry interval SHOULD be at least 30 minutes" and that the give-up time "generally needs to be at least 4-5 days" ([RFC 5321, section 4.5.4.1](https://www.rfc-editor.org/rfc/rfc5321#section-4.5.4.1)).
+
+Real servers are often faster. Postfix, for example, defaults to waiting at least 300 seconds and at most 4000 seconds between attempts for a deferred message, scans its deferred queue every 300 seconds, and returns a message as undeliverable after 5 days ([Postfix postconf(5)](https://www.postfix.org/postconf.5.html#minimal_backoff_time)).
+
+So a single temporary failure on a default Postfix server adds at least about 5 minutes, and repeated failures stretch toward an hour between attempts.
+
+**What you can do:** watch your deferred queue, read the 4xx replies in your logs to find the cause, and fix that cause rather than only shortening retry times.
+
+### 3. SPF, DKIM and DMARC
+
+Receiving servers check whether a message is authorized by the sender's domain. SPF lists the servers allowed to send for a domain, DKIM adds a signature that proves the domain sent the message, and DMARC tells receivers what to do when those checks fail.
+
+Gmail requires every sender to set up SPF or DKIM, to have valid forward and reverse DNS for sending IPs, and to use TLS. Senders of more than 5,000 messages a day to Gmail also need SPF, DKIM and DMARC. Google says the guidelines help "prevent Gmail from limiting sending rates, blocking messages, or marking messages as spam" ([Google email sender guidelines](https://support.google.com/a/answer/81126)).
+
+DNS problems during these checks can also delay mail. If an SPF check hits a temporary DNS error, RFC 7208 says the receiver can accept the message or temporarily reject it, and a rejection "SHOULD use an SMTP reply code of 451" ([RFC 7208, section 8.6](https://www.rfc-editor.org/rfc/rfc7208#section-8.6)). The message then waits for a retry.
+
+**What you can do:** publish an SPF record that lists every service that sends for your domain, sign all mail with DKIM, publish a DMARC record, and use reliable DNS hosting. Forward Email has setup guides for [SPF](https://forwardemail.net/faq#how-do-i-set-up-spf-for-forward-email), [DKIM](https://forwardemail.net/faq#how-do-i-set-up-dkim-for-forward-email) and [DMARC](https://forwardemail.net/faq#how-do-i-set-up-dmarc-for-forward-email).
+
+### 4. Sender reputation and rate limits
+
+Mailbox providers limit how much mail they accept from each sender, and the limits are lower for senders they do not know or do not trust. Extra mail gets a temporary rejection and waits in the sender's queue.
+
+Forward Email publishes its inbound limits as an example: senders that are not on its allowlist can deliver up to 1000 messages per day per sender and recipient domain into its mailboxes, with a burst limit of 50 messages per sender and domain per minute, while large providers such as gmail.com and allowlisted senders have higher limits ([Forward Email FAQ: Do you have rate limiting](https://forwardemail.net/faq#do-you-have-rate-limiting)).
+
+**What you can do:** raise volume on new IP addresses and domains gradually, keep spam complaints low (Gmail asks senders to stay below 0.3%), and remove addresses that bounce.
+
+### 5. Your own sending volume
+
+Delays also start on your side. A newsletter to many recipients can fill your outbound queue, and a password reset sent at the same moment waits behind it. Sending services also slow down accounts that send unusual volumes. Forward Email, for example, slows outbound sending with a 421 reply when too many of an account's recent messages are still waiting in the queue ([Forward Email FAQ: outbound SMTP limits](https://forwardemail.net/faq#what-are-your-outbound-smtp-limits)).
+
+**What you can do:** send transactional mail (sign-ins, resets, receipts) through a separate stream or server from bulk mail, so a large send cannot hold it up.
+
+### 6. Content scanning and message size
+
+Receiving servers scan messages for spam and malware before they file them. Bigger messages take longer to upload and to scan, and a message that looks suspicious can be held for more checks or filed as spam. Spam filing does not change the delivery time, but to the recipient it looks the same as a message that never came.
+
+**What you can do:** keep transactional emails small and plain, and link to large files instead of attaching them.
+
+### 7. Forwarding hops
+
+When an address forwards to another mailbox, the forwarding server receives the message and then sends it again to the final provider. That second delivery can be greylisted, rate limited or deferred on its own. Forwarding can also break SPF, because the forwarding server is not listed in the original sender's SPF record. Forward Email re-seals forwarded messages with ARC, and rewrites the From header only when the sender's DMARC check did not pass and no DKIM signature aligns with the From header ([Forward Email FAQ: How do you handle email delivery issues](https://forwardemail.net/faq#how-do-you-handle-email-delivery-issues)).
+
+Forward Email measures direct and forwarded delivery separately on its [live TTI page](https://forwardemail.net/tti), so you can see the cost of the extra hop for each provider.
+
+### 8. Mail apps that check on a timer
+
+Sometimes the message is already in the mailbox and the app has not shown it yet. Apps that use push notifications or the IMAP IDLE command ([RFC 2177](https://www.rfc-editor.org/rfc/rfc2177)) show new mail right away. Apps that fetch on a schedule, for example every 15 minutes, show it on the next fetch. Check webmail to tell this case apart from a real delivery delay.
+
+### Sources for this page
+
+- [RFC 5321: Simple Mail Transfer Protocol, section 4.5.4.1](https://www.rfc-editor.org/rfc/rfc5321#section-4.5.4.1)
+- [RFC 6647: Email Greylisting](https://www.rfc-editor.org/rfc/rfc6647)
+- [RFC 7208: Sender Policy Framework, section 8.6](https://www.rfc-editor.org/rfc/rfc7208#section-8.6)
+- [Postfix configuration parameters](https://www.postfix.org/postconf.5.html#minimal_backoff_time)
+- [Google: Email sender guidelines](https://support.google.com/a/answer/81126)
+- [Forward Email FAQ](https://forwardemail.net/faq)
+
+---
+
+## How Forward Email Measures Time to Inbox
+
+> Forward Email publishes live delivery times to mailboxes at major email providers, and the code that measures them is public on GitHub. This page explains what that code does, step by step.
+
+Source: https://timetoinbox.com/forward-email-time-to-inbox/
+
+### How the monitor works in short
+
+Forward Email's monitor sends two test emails to a mailbox at each tested provider, one directly and one through a forwarding address, and records how many milliseconds pass until each message shows up over IMAP. The latest results and a 24-hour chart are on the [Forward Email time to inbox page](https://forwardemail.net/tti).
+
+Forward Email describes it on that page as "our own open-source monitor" that "sends test emails to inboxes at major email providers and records how long each one takes to arrive," and adds that its engineers "get an alert when a delivery takes longer than 10 seconds."
+
+The numbers change every few minutes, so this site does not copy them. Open the live page for current values.
+
+### Which providers are tested
+
+The monitor's configuration ([config/index.js](https://github.com/forwardemail/forwardemail.net/blob/master/config/index.js)) defines test mailboxes for Forward Email, Gmail, Outlook/Hotmail, Apple iCloud, Fastmail and Yahoo/AOL. A provider is only tested when credentials for its test mailbox are set, and code comments say Outlook and Fastmail were taken out of rotation. The live page lists Forward Email, Gmail, Apple iCloud and Yahoo/AOL.
+
+### How a test run works
+
+The steps below follow [jobs/tti.js](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js) and [helpers/get-message.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-message.js).
+
+1. **Decide whether to run.** Every minute the job looks at the latest saved result. If that result is less than 5 minutes old and every provider was under 10 seconds, it waits. Otherwise it takes a lock in Redis so only one server runs the test, and starts a new run.
+2. **Build two messages per provider.** One goes straight to the provider's test mailbox ("Direct"). The other goes to a forwarding address that delivers into the same mailbox ("Forward"). Each message gets a random Message-ID and random subject and body text.
+3. **Record the start time and sign.** The job takes the current time, uses it as the Date header, and signs the message with DKIM.
+4. **Deliver.** The message is sent on port 25 straight to the mail server for the recipient's domain, using the same delivery helper that Forward Email's MX servers use to forward mail. If that fails, the job falls back to Forward Email's own SMTP service.
+5. **Poll the inbox.** Two IMAP connections per provider stay open, so the direct and forwarded messages can be watched at the same time. The poller sends a NOOP to get fresh mailbox state, reads the Message-ID header of every message in the inbox, and repeats without a pause until it finds the test message or one minute passes.
+6. **Record the arrival time.** When the message is found, the job takes the current time on its own clock. The code comments explain that provider timestamps, Received headers and the envelope date are not used, because of clock differences between servers.
+7. **Save and clean up.** The job stores the direct and forwarding times for each provider (a message not found within one minute is stored as 0), then deletes all messages in each test inbox. Saved results expire after 30 days.
+8. **Alert.** If any provider took 10 seconds or longer, or a message never arrived, the job emails Forward Email's alerts address with every provider's numbers, at most once every 30 minutes.
+
+### Where the results are shown
+
+- The [time to inbox page](https://forwardemail.net/tti) shows the latest direct and forwarding time for each provider and a chart of the past 24 hours.
+- The Forward Email home page and pricing page show a summary. That summary uses the most recent result from the past 24 hours in which every provider was under 10 seconds ([helpers/get-latest-tti.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-latest-tti.js)).
+
+Because the home page summary skips runs with a slow provider, the dedicated TTI page is the place to see every recent result.
+
+### How to read the numbers
+
+- **Direct** is the time from Forward Email's server to the provider's inbox. It reflects how fast that provider accepts and files mail from Forward Email.
+- **Forwarding** includes the extra trip through a forwarding address. Compare it with Direct to see what a forward costs for each provider.
+- Times include the full SMTP transaction and the provider's own processing, because the clock runs until the message is visible over IMAP.
+- The numbers describe mail sent by Forward Email's servers. Mail from your own server can be faster or slower, depending on the [factors that affect delivery speed](https://timetoinbox.com/what-affects-email-delivery-speed/).
+
+### Other published TTI data
+
+Postmark publishes time to inbox for its own sending on its [TTI page](https://tti.postmarkapp.com/). In its blog, Postmark says the checks run every five minutes against major mailbox providers ([Postmark blog](https://postmarkapp.com/blog/why-we-removed-inbox-delivery-tests-from-our-status-page)). Postmark and Forward Email measure their own sending with different setups, so their numbers are not a direct comparison.
+
+### Run a similar monitor yourself
+
+The same method works for any sender. See [how to measure time to inbox](https://timetoinbox.com/how-to-measure-time-to-inbox/) for a short Node.js example that sends a test message and polls IMAP until it arrives.
+
+### Sources for this page
+
+- [Forward Email: Time to Inbox (live results)](https://forwardemail.net/tti)
+- [forwardemail.net: jobs/tti.js](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js)
+- [forwardemail.net: helpers/get-message.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-message.js)
+- [forwardemail.net: helpers/get-latest-tti.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-latest-tti.js)
+- [forwardemail.net: config/index.js](https://github.com/forwardemail/forwardemail.net/blob/master/config/index.js)
+- [Postmark: why we removed inbox delivery tests from our status page](https://postmarkapp.com/blog/why-we-removed-inbox-delivery-tests-from-our-status-page)
+
+### Try the service behind the numbers
+
+Forward Email is open-source email hosting and forwarding. You can start with free forwarding by adding MX and TXT records to your domain, or self-host it with Docker.
+
+[Get started with Forward Email](https://forwardemail.net)
+
+[Self-host Forward Email](https://forwardemail.net/self-hosted)
+
+---
+
+## Time to Inbox FAQ
+
+> Short answers to common questions about how long email takes to arrive and why it is sometimes late. Each answer links to a longer guide or a primary source.
+
+Source: https://timetoinbox.com/faq/
+
+### What is time to inbox (TTI)?
+
+Time to inbox is the time between sending an email and its arrival in the recipient's inbox, usually measured in seconds. It measures delivery speed, not whether the message was opened. See [what is time to inbox](https://timetoinbox.com/what-is-time-to-inbox/).
+
+### How long should an email take to arrive?
+
+Between well-configured servers, delivery usually takes a few seconds. There is no official target. Forward Email alerts its own engineers when a test message takes 10 seconds or longer. A delay of several minutes or more usually means a server deferred the message and the sender retried it later.
+
+### Why is my password reset or verification email late?
+
+The most common reasons are greylisting at the recipient's provider, rate limiting of the sender, failed SPF or DKIM checks, or a mail app that only checks for new mail every few minutes. Check the spam folder and webmail first. If the message is there, read its Received headers to see which hop held it. See [what affects email delivery speed](https://timetoinbox.com/what-affects-email-delivery-speed/).
+
+### What is greylisting and how long does it delay email?
+
+Greylisting is when a receiving server temporarily rejects mail from a sender it has not seen before, with a 4xx reply, and accepts it when the sender retries ([RFC 6647](https://www.rfc-editor.org/rfc/rfc6647)). The delay equals the sender's retry interval. Forward Email's greylist requires 5 minutes to pass ([Forward Email FAQ](https://forwardemail.net/faq#do-you-have-a-greylist)), Postfix retries deferred mail after at least 300 seconds by default, and RFC 5321 suggests waiting at least 30 minutes.
+
+### Do SPF, DKIM and DMARC affect how fast email arrives?
+
+Yes, indirectly. Gmail requires SPF or DKIM for all senders and SPF, DKIM and DMARC for senders of more than 5,000 messages a day, and says following them helps prevent Gmail from limiting sending rates, blocking messages or marking messages as spam ([Google sender guidelines](https://support.google.com/a/answer/81126)). A DNS error during an SPF check can also lead to a temporary 451 rejection and a retry ([RFC 7208](https://www.rfc-editor.org/rfc/rfc7208#section-8.6)).
+
+### How do I measure time to inbox?
+
+Send a test email with a unique Message-ID to a mailbox you control, poll it over IMAP until the message appears, and subtract the send time from the arrival time using one clock. For a single message you already have, compare the timestamps in its Received headers. See [how to measure time to inbox](https://timetoinbox.com/how-to-measure-time-to-inbox/).
+
+### Is time to inbox the same as deliverability?
+
+No. Deliverability usually means whether mail is accepted and lands in the inbox instead of spam. Time to inbox measures how long that takes. A greylisted message counts as delivered but can arrive many minutes late.
+
+### Why can forwarded email be slower than direct email?
+
+A forwarded message is delivered twice: once to the forwarding server and again to the final mailbox. The second delivery can be greylisted, rate limited or deferred on its own. Forward Email publishes direct and forwarded times side by side on its [live TTI page](https://forwardemail.net/tti).
+
+### Why does email show up in webmail before my phone?
+
+The message is already in the mailbox, but the app on your phone has not checked yet. Apps that use push or IMAP IDLE show new mail right away, and apps that fetch on a schedule show it on the next fetch. This delay happens on the reader's device, not on the delivery path.
+
+### Where can I see Forward Email's time to inbox?
+
+On the [Forward Email time to inbox page](https://forwardemail.net/tti). It shows the latest direct and forwarding delivery times for each tested provider and a chart of the past 24 hours. [This guide explains how those numbers are measured](https://timetoinbox.com/forward-email-time-to-inbox/).
+
+### Is the Forward Email TTI monitor code public?
+
+Yes. The monitor is [jobs/tti.js](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js) in the forwardemail.net repository on GitHub, and the IMAP polling logic is in [helpers/get-message.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-message.js).
+
+### Does TimeToInbox use cookies or tracking?
+
+No. This site is static HTML and CSS with no JavaScript, cookies, analytics or third-party requests. It is hosted on GitHub Pages and served through Cloudflare, which processes visitor IP addresses. Read the [privacy policy](https://timetoinbox.com/privacy/).
+
+---
+
+## About TimeToInbox
+
+> TimeToInbox is a free reference on time to inbox and email delivery speed, written and maintained by the Forward Email team.
+
+Source: https://timetoinbox.com/about/
+
+### Who runs this site
+
+TimeToInbox is run by the team behind [Forward Email](https://forwardemail.net), an open-source email service for custom domains. Forward Email measures and publishes its own [time to inbox results](https://forwardemail.net/tti), and this site explains what those numbers mean and how to measure the same thing for your own mail. Start with the [time to inbox overview](https://timetoinbox.com/).
+
+The site has no ads and nothing to sign up for. Where Forward Email is relevant, the pages link to it, and every link to a Forward Email page or source file goes to the real page.
+
+### How the content is written
+
+- Facts and numbers link to a primary source: an RFC, vendor documentation, or the Forward Email source code.
+- Descriptions of Forward Email's monitor come from reading its code in the [forwardemail.net repository](https://github.com/forwardemail/forwardemail.net).
+- Live measurements are not copied onto this site because they change every few minutes. The pages link to the live results instead.
+
+### Contact and corrections
+
+Found a mistake or a broken link? [Open an issue on GitHub](https://github.com/forwardemail/timetoinbox.com/issues) or send a pull request. Each page has an "Edit this page on GitHub" link in the footer that opens its source file.
+
+For questions about Forward Email itself, start with the [Forward Email FAQ](https://forwardemail.net/faq) or email [support@forwardemail.net](mailto:support@forwardemail.net). To report a security issue with this site, email [security@forwardemail.net](mailto:security@forwardemail.net) or see `/.well-known/security.txt`.
+
+### Source code
+
+The site is plain HTML and CSS generated by a small Node.js script with no dependencies. The source is public at [github.com/forwardemail/timetoinbox.com](https://github.com/forwardemail/timetoinbox.com), and GitHub Pages serves the files from the repository.
+
+### Privacy summary
+
+TimeToInbox does not use cookies, analytics, trackers, JavaScript or third-party resources. Requests pass through Cloudflare, which processes visitor IP addresses, on their way to GitHub Pages. Read the full [privacy policy](https://timetoinbox.com/privacy/).
+
+### Files for crawlers and AI agents
+
+- `/llms.txt`: a short index of the site for language models.
+- `/llms-full.txt`: the full text of every page in Markdown.
+- `/sitemap.xml` and `/robots.txt`: all crawlers, including AI crawlers, are allowed.
+- Every page has a Markdown copy at the same path with a `.md` suffix, for example `/faq.md`. The home page copy is `/index.md`.
+
+---
+
+## Privacy Policy
+
+> TimeToInbox collects no personal data. The site has no cookies, analytics, trackers, forms or JavaScript, and every file loads from timetoinbox.com.
+
+Source: https://timetoinbox.com/privacy/
+
+### Privacy summary
+
+TimeToInbox does not collect, store or share personal data. It sets no cookies, runs no analytics or tracking scripts, and loads no fonts, images or scripts from other domains.
+
+### What the site does not do
+
+- No cookies, local storage or other browser storage.
+- No analytics, tracking pixels, advertising or session recording.
+- No JavaScript. Pages are plain HTML and one stylesheet.
+- No forms, accounts or newsletter sign-ups.
+- No third-party requests. Fonts are your system fonts, and every image and stylesheet is served from timetoinbox.com. A Content Security Policy in each page blocks scripts and outside resources.
+
+### Hosting on GitHub Pages and Cloudflare
+
+Requests to timetoinbox.com pass through Cloudflare, which runs as a CDN and proxy in front of GitHub Pages and processes the IP address of each visitor ([Cloudflare privacy policy](https://www.cloudflare.com/privacypolicy/)). Your browser still only talks to timetoinbox.com.
+
+GitHub Pages hosts the files. GitHub states that "when a GitHub Pages site is visited, the visitor's IP address is logged and stored for security purposes" ([GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages)). GitHub keeps those logs under the [GitHub General Privacy Statement](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement).
+
+### Your data and your choices
+
+Because the site stores nothing about you, there is no account to delete and no data to export. You do not need to accept or refuse cookies, and blocking JavaScript changes nothing on these pages. To ask about server or proxy logs, contact GitHub or Cloudflare through their privacy policies.
+
+If you email the Forward Email team about this site, your message is handled under the [Forward Email privacy policy](https://forwardemail.net/privacy). If you open a GitHub issue, it is public and handled under GitHub's terms.
+
+### Links to other sites
+
+Pages link to forwardemail.net, GitHub, RFC Editor and other sites. Those sites have their own privacy policies. Forward Email's privacy policy is at [forwardemail.net/privacy](https://forwardemail.net/privacy). When you follow a link, the site sends only the origin (timetoinbox.com) as the referrer, not the full page address.
+
+### Questions about this policy
+
+Questions about this policy can go to [support@forwardemail.net](mailto:support@forwardemail.net) or to a [GitHub issue](https://github.com/forwardemail/timetoinbox.com/issues). Changes to this policy are visible in the [file's commit history](https://github.com/forwardemail/timetoinbox.com/commits/main/src/pages/privacy.html).

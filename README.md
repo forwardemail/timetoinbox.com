@@ -1,172 +1,73 @@
+# TimeToInbox
 
-# Time to Inbox | Email Deliverability Metrics & Monitoring
+Source for [timetoinbox.com](https://timetoinbox.com), a free guide to time to inbox (TTI) from the [Forward Email](https://forwardemail.net) team. Time to inbox is the time between sending an email and its arrival in the recipient's inbox.
 
-## Optimize Your Email Deliverability with Time to Inbox Metrics
+The site explains what TTI measures, how to measure it yourself, what slows email delivery down, and how Forward Email measures and publishes its own TTI ([live results](https://forwardemail.net/tti), [monitor source code](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js)).
 
-Measure, monitor, and improve how quickly your emails reach recipient inboxes
+## Pages
 
-Gain insights into email delivery performance and ensure your messages arrive promptly
+| URL | Source file |
+| --- | --- |
+| `/` | `src/pages/index.html` |
+| `/what-is-time-to-inbox/` | `src/pages/what-is-time-to-inbox.html` |
+| `/how-to-measure-time-to-inbox/` | `src/pages/how-to-measure-time-to-inbox.html` |
+| `/what-affects-email-delivery-speed/` | `src/pages/what-affects-email-delivery-speed.html` |
+| `/forward-email-time-to-inbox/` | `src/pages/forward-email-time-to-inbox.html` |
+| `/faq/` | `src/pages/faq.html` |
+| `/about/` | `src/pages/about.html` |
+| `/privacy/` | `src/pages/privacy.html` |
 
-[Learn About TTI](https://forwardemail.net/tti) | [See Forward Email's TTI](https://forwardemail.net/tti)
+## How it works
 
-## What is Time to Inbox (TTI)?
+The site is static HTML and one stylesheet. It has no JavaScript, cookies, analytics or third-party requests. GitHub Pages serves the files straight from the root of the `main` branch, so every generated file is committed.
 
-Time to Inbox (TTI) is a critical email deliverability metric that measures the time it takes for an email to travel from the sender's server to the recipient's inbox. This metric provides valuable insights into email delivery performance and can help identify potential deliverability issues.
+`scripts/build.js` is a small Node.js script with no dependencies. It reads `src/pages/*.html` and `src/site.css` and writes:
 
-According to Postmark, a leading email service provider, "Time to Inbox is the length of time it takes from when an email is sent from a client until it is logged as delivered." [1]
+- `index.html` and `<slug>/index.html` for each page, with the shared header, navigation, footer, meta tags, Open Graph tags and JSON-LD structured data
+- `index.md` and `<slug>.md`, a Markdown copy of each page (linked from each page with `rel="alternate"`)
+- `404.html`
+- `css/site.min.css` (minified from `src/site.css`)
+- `sitemap.xml`, `robots.txt`, `llms.txt`, `llms-full.txt` and `site.webmanifest`
 
-Unlike other email metrics that focus on recipient engagement (opens, clicks), TTI focuses on the technical aspects of email delivery, helping you understand if your emails are being delivered promptly or experiencing delays in the delivery pipeline.
+Files that are not generated: `.well-known/security.txt`, `CNAME`, `.nojekyll` (lets GitHub Pages serve `.well-known`), the icons, `og-image.png` and `images/`.
 
-### Why TTI Matters
+## Editing a page
 
-In today's fast-paced digital environment, the timing of email delivery can significantly impact the effectiveness of your email communications:
+1. Edit the page in `src/pages/`. Each file starts with a `<!--meta {...} -->` block (title, description, navigation label, structured data options) followed by the page body HTML.
+2. Run the build (Node.js 18 or later):
 
-- **Time-sensitive communications** like password resets, verification codes, and urgent notifications need to arrive quickly
-- **Marketing campaigns** timed for specific events lose effectiveness if delayed
-- **Transactional emails** such as order confirmations and receipts should arrive promptly to reduce customer anxiety
-- **System notifications** for critical events need immediate delivery to enable timely responses
+   ```sh
+   node scripts/build.js
+   ```
 
-## Benefits of Monitoring Time to Inbox
+3. Commit the source change and the regenerated files together.
 
-### Improved Deliverability
-Identify and resolve delivery bottlenecks to ensure emails reach inboxes faster and more reliably.
+To add a page, create `src/pages/<slug>.html` with a meta block and an `order` value. The build adds it to the navigation, footer, sitemap, `llms.txt` and `llms-full.txt`.
 
-### Enhanced User Experience
-Provide a better experience for recipients by ensuring time-sensitive communications arrive promptly.
+Content conventions used by the build:
 
-### Increased Engagement
-Improve open and click-through rates by delivering emails when recipients are most likely to engage.
+- `<div class="faq-item"><h2 class="faq-q">Question</h2><div class="faq-a">...</div></div>` becomes FAQPage structured data (`"schemaType": "FAQPage"`).
+- `<ol class="steps">` with an `<h3>` per `<li>` becomes HowTo structured data when the meta block has a `howto` object.
+- Every fact or number should link to a primary source, and live TTI values should link to [forwardemail.net/tti](https://forwardemail.net/tti) instead of being copied.
 
-### Provider Comparison
-Compare email service providers based on actual delivery performance to make informed decisions.
+## Images
 
-### Early Issue Detection
-Detect delivery problems before they impact your communication strategy or business operations.
+`og-image.png` (1200x630) is a screenshot of `src/og-image.html`, and the PNG icons are screenshots of `src/icon.html` (which shows `icon.svg`). To regenerate them, open those files in a browser at the target size, for example with headless Chrome:
 
-### Performance Optimization
-Fine-tune your email infrastructure and sending practices based on concrete delivery metrics.
+```sh
+chrome --headless=new --screenshot=og-image.png --window-size=1200,630 src/og-image.html
+```
 
-## Key Email Deliverability Metrics
+Some Chrome versions subtract the window frame from `--window-size`; check the output size.
 
-While Time to Inbox (TTI) is a crucial metric for measuring email delivery performance, it's part of a broader set of deliverability metrics that provide a comprehensive view of your email program's health:
+## Preview locally
 
-### Time to Inbox (TTI)
-The time it takes for an email to travel from the sender's server to the recipient's inbox, measured in seconds or milliseconds.
-**Importance: ★★★★★**
+```sh
+npx http-server . -p 8080
+```
 
-### Inbox Placement Rate
-The percentage of emails that successfully reach recipients' inboxes rather than spam folders or being blocked entirely.
-**Importance: ★★★★★**
+Then open <http://localhost:8080/>.
 
-### Delivery Rate
-The percentage of emails that were successfully delivered to recipients' mail servers (not necessarily inboxes).
-**Importance: ★★★★☆**
+## Contributing
 
-### Bounce Rate
-The percentage of emails that were rejected by recipient mail servers, including both hard and soft bounces.
-**Importance: ★★★★☆**
-
-### Spam Complaint Rate
-The percentage of delivered emails that recipients mark as spam, a critical factor affecting sender reputation.
-**Importance: ★★★★★**
-
-### Open Rate
-The percentage of delivered emails that recipients open, providing insight into subject line effectiveness and inbox placement.
-**Importance: ★★★☆☆**
-
-## Forward Email's Time to Inbox Performance
-
-Forward Email is committed to transparency in email deliverability, providing real-time Time to Inbox (TTI) metrics that demonstrate their exceptional delivery performance. As the only email service with 100% open-source and transparent monitoring, Forward Email sets the standard for deliverability transparency. [2]
-
-### Industry-Leading Delivery Times
-
-Forward Email continuously monitors how long it takes for emails sent through their service to be delivered to test inboxes at major email service providers. Their engineering team is automatically alerted if any delivery times exceed 10 seconds, ensuring consistent performance.
-
-Current Time to Inbox metrics for Forward Email based on their monitoring data:
-
-### Email Service Provider TTI Comparison
-
-| Email Service Provider | Average TTI | Data Source |
-|------------------------|-------------|-------------|
-| Forward Email | 1.6s - 1.7s | Forward Email Monitoring [2] |
-| Postmark | 11.96s - 23.23s | Postmark TTI Monitoring [1] |
-| SendGrid | Inbox placement: 61.0% | Mailtrap Research [3] |
-| Mailgun | Inbox placement: 71.4% | Mailtrap Research [3] |
-| Amazon SES | Inbox placement: 77.1% | Mailtrap Research [3] |
-
-Note: TTI measurements can vary based on testing methodology, recipient email providers, and network conditions. The data above represents published metrics from each provider's own monitoring or independent research.
-
-## Factors Affecting Time to Inbox
-
-### Sender Reputation
-Your sender reputation significantly impacts how quickly emails are processed. Email service providers prioritize delivery from senders with established positive reputations.
-
-According to Mailtrap research, email service providers only account for about 30% of your email deliverability, with sender practices making up the rest. [3]
-
-### Infrastructure Quality
-The quality and configuration of your email infrastructure, including servers, IP addresses, and authentication protocols (SPF, DKIM, DMARC), directly affect delivery speed.
-
-### Email Volume
-Sending large volumes of email simultaneously can trigger rate limiting or throttling by recipient servers, increasing delivery time.
-
-### Content Quality
-Emails with spam-like content, excessive images, or poor HTML structure may undergo additional filtering, delaying inbox placement.
-
-### Recipient Provider
-Different email providers implement varying levels of filtering and processing. Gmail, Outlook, Yahoo, and others each have unique delivery characteristics.
-
-### Authentication Status
-Properly authenticated emails with valid SPF, DKIM, and DMARC records typically experience faster delivery times than unauthenticated messages.
-
-## Implementing TTI Monitoring
-
-### 1. Set Up Seed Addresses
-Create test email accounts across major providers (Gmail, Outlook, Yahoo, etc.) to serve as monitoring endpoints.
-
-### 2. Implement Tracking
-Add unique identifiers to test emails and implement server-side logging to record send and delivery timestamps.
-
-### 3. Establish Baselines
-Collect initial data to establish baseline TTI metrics for different recipient providers and message types.
-
-### 4. Set Up Alerts
-Configure alerting thresholds to notify your team when TTI exceeds acceptable limits.
-
-### 5. Regular Testing
-Schedule regular test sends to continuously monitor TTI performance and detect trends or issues.
-
-Forward Email handles TTI monitoring automatically for all customers, with transparent reporting and proactive alerts if delivery times exceed thresholds.
-
-[Learn More About Forward Email](https://forwardemail.net)
-
-## TTI Optimization Use Cases
-
-### Password Reset Emails
-Users waiting for password reset links expect near-instant delivery. Optimizing TTI ensures users can quickly regain access to their accounts without frustration.
-
-### Time-Sensitive Notifications
-Alerts about security incidents, system outages, or critical updates need to reach recipients promptly to enable timely action.
-
-### Transactional Confirmations
-Order confirmations, shipping notifications, and payment receipts should arrive quickly to reduce customer anxiety and support inquiries.
-
-### Two-Factor Authentication
-Authentication codes sent via email must arrive within seconds to provide a seamless login experience without disrupting the user's workflow.
-
-### Event Reminders
-Reminders for upcoming events or appointments should arrive with sufficient lead time to allow recipients to prepare or reschedule if necessary.
-
-### System Monitoring Alerts
-IT teams rely on prompt delivery of system alerts to address issues before they impact users or business operations.
-
-## Ready to Optimize Your Email Delivery?
-
-Forward Email provides industry-leading Time to Inbox performance with transparent monitoring and reporting. Experience the difference that fast, reliable email delivery can make for your business.
-
-[Get Started with Forward Email](https://forwardemail.net) | [Learn More](https://forwardemail.net/faq)
-
-## Citations & References
-
-1. Postmark. (2025). *Time to Inbox*. Retrieved April 6, 2025, from [https://tti.postmarkapp.com/](https://tti.postmarkapp.com/)
-2. Forward Email. (2025). *Time to Inbox*. Retrieved April 6, 2025, from Forward Email's Time to Inbox monitoring page.
-3. Bostogannashvili, K., Kaitaz, D., & Hurchenko, Y. (2025, January 6). *Email Deliverability Comparison Results [2025]*. Mailtrap. Retrieved April 6, 2025, from [https://mailtrap.io/blog/email-deliverability-comparison/](https://mailtrap.io/blog/email-deliverability-comparison/)
+Open an [issue](https://github.com/forwardemail/timetoinbox.com/issues) or a pull request. Security reports: see [`.well-known/security.txt`](.well-known/security.txt).

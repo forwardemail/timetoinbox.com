@@ -1,0 +1,81 @@
+<!--meta
+{
+  "order": 4,
+  "slug": "forward-email-time-to-inbox",
+  "nav": "Forward Email TTI",
+  "title": "How Forward Email Measures Time to Inbox (TTI)",
+  "description": "How the public Forward Email TTI monitor times test emails sent to Gmail, Apple iCloud, Yahoo/AOL and its own mailboxes.",
+  "h1": "How Forward Email Measures Time to Inbox",
+  "lead": "Forward Email publishes live delivery times to mailboxes at major email providers, and the code that measures them is public on GitHub. This page explains what that code does, step by step.",
+  "heroCtas": "<a class=\"btn btn-primary\" href=\"https://forwardemail.net/tti\">Open the live TTI page</a><a class=\"btn btn-secondary\" href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\">Read jobs/tti.js</a>",
+  "about": [ { "@type": "Thing", "name": "Time to inbox monitoring" }, { "@id": "https://forwardemail.net/#organization" } ],
+  "llms": "guide",
+  "llmsDesc": "Walkthrough of Forward Email's public TTI monitor (jobs/tti.js): providers tested, direct and forwarded paths, IMAP polling, timing, alerts, and where results are published."
+}
+-->
+<section class="section">
+  <div class="container narrow prose">
+    <h2 id="summary">How the monitor works in short</h2>
+    <p class="answer">Forward Email's monitor sends two test emails to a mailbox at each tested provider, one directly and one through a forwarding address, and records how many milliseconds pass until each message shows up over IMAP. The latest results and a 24-hour chart are on the <a href="https://forwardemail.net/tti">Forward Email time to inbox page</a>.</p>
+    <p>Forward Email describes it on that page as "our own open-source monitor" that "sends test emails to inboxes at major email providers and records how long each one takes to arrive," and adds that its engineers "get an alert when a delivery takes longer than 10 seconds."</p>
+    <p>The numbers change every few minutes, so this site does not copy them. Open the live page for current values.</p>
+
+    <h2 id="providers">Which providers are tested</h2>
+    <p>The monitor's configuration (<a href="https://github.com/forwardemail/forwardemail.net/blob/master/config/index.js">config/index.js</a>) defines test mailboxes for Forward Email, Gmail, Outlook/Hotmail, Apple iCloud, Fastmail and Yahoo/AOL. A provider is only tested when credentials for its test mailbox are set, and code comments say Outlook and Fastmail were taken out of rotation. The live page lists Forward Email, Gmail, Apple iCloud and Yahoo/AOL.</p>
+
+    <h2 id="how-it-works">How a test run works</h2>
+    <p>The steps below follow <a href="https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js">jobs/tti.js</a> and <a href="https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-message.js">helpers/get-message.js</a>.</p>
+    <ol>
+      <li><strong>Decide whether to run.</strong> Every minute the job looks at the latest saved result. If that result is less than 5 minutes old and every provider was under 10 seconds, it waits. Otherwise it takes a lock in Redis so only one server runs the test, and starts a new run.</li>
+      <li><strong>Build two messages per provider.</strong> One goes straight to the provider's test mailbox ("Direct"). The other goes to a forwarding address that delivers into the same mailbox ("Forward"). Each message gets a random Message-ID and random subject and body text.</li>
+      <li><strong>Record the start time and sign.</strong> The job takes the current time, uses it as the Date header, and signs the message with DKIM.</li>
+      <li><strong>Deliver.</strong> The message is sent on port 25 straight to the mail server for the recipient's domain, using the same delivery helper that Forward Email's MX servers use to forward mail. If that fails, the job falls back to Forward Email's own SMTP service.</li>
+      <li><strong>Poll the inbox.</strong> Two IMAP connections per provider stay open, so the direct and forwarded messages can be watched at the same time. The poller sends a NOOP to get fresh mailbox state, reads the Message-ID header of every message in the inbox, and repeats without a pause until it finds the test message or one minute passes.</li>
+      <li><strong>Record the arrival time.</strong> When the message is found, the job takes the current time on its own clock. The code comments explain that provider timestamps, Received headers and the envelope date are not used, because of clock differences between servers.</li>
+      <li><strong>Save and clean up.</strong> The job stores the direct and forwarding times for each provider (a message not found within one minute is stored as 0), then deletes all messages in each test inbox. Saved results expire after 30 days.</li>
+      <li><strong>Alert.</strong> If any provider took 10 seconds or longer, or a message never arrived, the job emails Forward Email's alerts address with every provider's numbers, at most once every 30 minutes.</li>
+    </ol>
+
+    <h2 id="where-published">Where the results are shown</h2>
+    <ul>
+      <li>The <a href="https://forwardemail.net/tti">time to inbox page</a> shows the latest direct and forwarding time for each provider and a chart of the past 24 hours.</li>
+      <li>The Forward Email home page and pricing page show a summary. That summary uses the most recent result from the past 24 hours in which every provider was under 10 seconds (<a href="https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-latest-tti.js">helpers/get-latest-tti.js</a>).</li>
+    </ul>
+    <p>Because the home page summary skips runs with a slow provider, the dedicated TTI page is the place to see every recent result.</p>
+
+    <h2 id="read-the-numbers">How to read the numbers</h2>
+    <ul>
+      <li><strong>Direct</strong> is the time from Forward Email's server to the provider's inbox. It reflects how fast that provider accepts and files mail from Forward Email.</li>
+      <li><strong>Forwarding</strong> includes the extra trip through a forwarding address. Compare it with Direct to see what a forward costs for each provider.</li>
+      <li>Times include the full SMTP transaction and the provider's own processing, because the clock runs until the message is visible over IMAP.</li>
+      <li>The numbers describe mail sent by Forward Email's servers. Mail from your own server can be faster or slower, depending on the <a href="/what-affects-email-delivery-speed/">factors that affect delivery speed</a>.</li>
+    </ul>
+
+    <h2 id="other-published-tti">Other published TTI data</h2>
+    <p>Postmark publishes time to inbox for its own sending on its <a href="https://tti.postmarkapp.com/">TTI page</a>. In its blog, Postmark says the checks run every five minutes against major mailbox providers (<a href="https://postmarkapp.com/blog/why-we-removed-inbox-delivery-tests-from-our-status-page">Postmark blog</a>). Postmark and Forward Email measure their own sending with different setups, so their numbers are not a direct comparison.</p>
+
+    <h2 id="run-your-own">Run a similar monitor yourself</h2>
+    <p>The same method works for any sender. See <a href="/how-to-measure-time-to-inbox/">how to measure time to inbox</a> for a short Node.js example that sends a test message and polls IMAP until it arrives.</p>
+
+    <h2 id="sources">Sources for this page</h2>
+    <ul class="sources">
+      <li><a href="https://forwardemail.net/tti">Forward Email: Time to Inbox (live results)</a></li>
+      <li><a href="https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js">forwardemail.net: jobs/tti.js</a></li>
+      <li><a href="https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-message.js">forwardemail.net: helpers/get-message.js</a></li>
+      <li><a href="https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-latest-tti.js">forwardemail.net: helpers/get-latest-tti.js</a></li>
+      <li><a href="https://github.com/forwardemail/forwardemail.net/blob/master/config/index.js">forwardemail.net: config/index.js</a></li>
+      <li><a href="https://postmarkapp.com/blog/why-we-removed-inbox-delivery-tests-from-our-status-page">Postmark: why we removed inbox delivery tests from our status page</a></li>
+    </ul>
+  </div>
+</section>
+
+<section class="cta" aria-labelledby="cta">
+  <div class="container">
+    <h2 id="cta">Try the service behind the numbers</h2>
+    <p>Forward Email is open-source email hosting and forwarding. You can start with free forwarding by adding MX and TXT records to your domain, or self-host it with Docker.</p>
+    <div class="cta-buttons">
+      <a class="btn btn-primary" href="https://forwardemail.net">Get started with Forward Email</a>
+      <a class="btn btn-secondary" href="https://forwardemail.net/self-hosted">Self-host Forward Email</a>
+    </div>
+  </div>
+</section>

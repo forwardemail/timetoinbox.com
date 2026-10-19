@@ -1,0 +1,144 @@
+<!--meta
+{
+  "order": 2,
+  "slug": "how-to-measure-time-to-inbox",
+  "nav": "Measure TTI",
+  "title": "How to Measure Time to Inbox (TTI) Yourself",
+  "description": "Measure time to inbox from Received headers, or with seed mailboxes and a script that sends a test email and polls IMAP.",
+  "h1": "How to Measure Time to Inbox",
+  "lead": "You can check one message by reading its Received headers, or measure TTI continuously with seed mailboxes and a small script that sends a test email and watches the inbox over IMAP.",
+  "howto": {
+    "name": "Measure time to inbox with seed mailboxes",
+    "description": "Send test emails to mailboxes you control at each provider and time how long each one takes to appear over IMAP.",
+    "tools": ["An SMTP account to send from", "Seed mailboxes with IMAP access", "A script runner such as Node.js and cron"]
+  },
+  "llms": "guide",
+  "llmsDesc": "Two methods to measure TTI: reading Received headers for a single message, and an automated seed-mailbox monitor with a short Node.js example."
+}
+-->
+<section class="section">
+  <div class="container narrow prose">
+    <h2 id="quick-answer">Quick answer</h2>
+    <p class="answer">To measure time to inbox, send a test email with a unique Message-ID to a mailbox you control, poll that mailbox over IMAP until the message appears, and subtract the send time from the arrival time. Take both timestamps from the same clock.</p>
+    <p>For a one-off check of a message you already received, read its Received headers instead. They show when each server along the way handled the message.</p>
+
+    <h2 id="received-headers">Method 1: read the Received headers of one message</h2>
+    <p>Every SMTP server that handles a message adds a <code>Received:</code> line at the top of the headers, with a timestamp (<a href="https://www.rfc-editor.org/rfc/rfc5321#section-4.4">RFC 5321, section 4.4</a>). Reading them from the bottom up shows the path of the message and the gap between hops.</p>
+    <ol>
+      <li>Open the full headers. In Gmail, open the message menu and choose <strong>Show original</strong>. In Apple Mail, choose <strong>View &rarr; Message &rarr; All Headers</strong>. Most other apps have an option named "View source" or similar.</li>
+      <li>Find the lowest <code>Received:</code> line. That is the first server that accepted the message.</li>
+      <li>Compare its timestamp with the <code>Date:</code> header (the time the sender's app created the message) and with each <code>Received:</code> line above it.</li>
+      <li>A large gap between two lines tells you which hop held the message.</li>
+    </ol>
+    <p>An example with made-up hosts and times, shortened for reading:</p>
+    <pre><code class="language-text">Received: from mx.example.net by mailbox.example.net; Tue, 3 Mar 2026 10:07:02 +0000
+Received: from smtp.example.com by mx.example.net; Tue, 3 Mar 2026 10:07:01 +0000
+Received: from app.example.com by smtp.example.com; Tue, 3 Mar 2026 10:01:58 +0000
+Date: Tue, 3 Mar 2026 10:01:57 +0000</code></pre>
+    <p>Here the message left <code>smtp.example.com</code> about 5 minutes after it arrived there. A gap like this often means the receiving server deferred the first attempt (for example with greylisting) and the sender retried later.</p>
+    <p>The <a href="https://toolbox.googleapps.com/apps/messageheader/">Google Admin Toolbox Messageheader tool</a> parses pasted headers and shows the delay at each hop.</p>
+    <div class="note">
+      <p><strong>Limits of this method:</strong> each timestamp comes from a different server's clock, so small differences can be clock skew. Forward Email's monitor code makes the same point and does not rely on Received headers or the Date header for this reason (<a href="https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-message.js">helpers/get-message.js</a>). Headers also only show what happened before the final mailbox stored the message.</p>
+    </div>
+
+    <h2 id="seed-mailboxes">Method 2: measure time to inbox with seed mailboxes</h2>
+    <p>A seed mailbox is a mailbox you own at a provider your recipients use, such as Gmail, Outlook.com, Yahoo or iCloud. Sending regular test messages to seed mailboxes gives you a TTI series you can graph and alert on.</p>
+    <ol class="steps">
+      <li id="step-1">
+        <h3>Create a seed mailbox at each provider</h3>
+        <p>Open one account per provider you care about and turn on IMAP access. Most providers require an app password for IMAP. Use these accounts only for testing so the script can read and delete everything in them.</p>
+      </li>
+      <li id="step-2">
+        <h3>Send from your real sending setup</h3>
+        <p>Send the test through the same server, domain, SPF, DKIM and DMARC setup your real mail uses. A test from a different server measures a different path.</p>
+      </li>
+      <li id="step-3">
+        <h3>Give each test message a unique Message-ID</h3>
+        <p>Generate a random Message-ID for every test and record the time just before you send. The ID lets the script find this exact message among older tests.</p>
+      </li>
+      <li id="step-4">
+        <h3>Poll the inbox over IMAP</h3>
+        <p>Keep an IMAP connection open, send a NOOP so the server reports new messages, and look for the Message-ID. Record the arrival time when it appears. Stop after a timeout, such as one minute, and count the message as late.</p>
+      </li>
+      <li id="step-5">
+        <h3>Use one clock for both timestamps</h3>
+        <p>Take the send time and the arrival time from the machine running the script. Provider timestamps and Received headers come from other clocks and can be off by seconds.</p>
+      </li>
+      <li id="step-6">
+        <h3>Repeat on a schedule and alert on outliers</h3>
+        <p>Run the test every few minutes, store the results, and alert when a delivery passes your threshold or never arrives. Delete old test messages so the inbox stays small.</p>
+      </li>
+    </ol>
+
+    <h2 id="example">Example script (Node.js)</h2>
+    <p>This short script follows the steps above for one seed mailbox. It uses the <a href="https://nodemailer.com/">Nodemailer</a> and <a href="https://imapflow.com/">ImapFlow</a> packages (<code>npm install nodemailer imapflow</code>) and reads credentials from environment variables. It is a starting point, not a production monitor.</p>
+    <pre><code class="language-js">// tti-check.mjs: send one test email and time its arrival over IMAP
+import { randomUUID } from 'node:crypto';
+import { setTimeout as sleep } from 'node:timers/promises';
+import nodemailer from 'nodemailer';
+import { ImapFlow } from 'imapflow';
+
+const env = process.env;
+
+const smtp = nodemailer.createTransport({
+  host: env.SMTP_HOST,
+  port: 465,
+  secure: true,
+  auth: { user: env.SMTP_USER, pass: env.SMTP_PASS }
+});
+
+const imap = new ImapFlow({
+  host: env.IMAP_HOST,
+  port: 993,
+  secure: true,
+  auth: { user: env.IMAP_USER, pass: env.IMAP_PASS },
+  logger: false
+});
+
+const id = `${randomUUID()}@${env.SMTP_USER.split('@')[1]}`;
+
+await imap.connect();
+await imap.mailboxOpen('INBOX');
+
+const sentAt = Date.now();
+await smtp.sendMail({
+  from: env.SMTP_USER,
+  to: env.IMAP_USER,
+  subject: 'Time to inbox test',
+  text: 'This is an automated time to inbox test.',
+  messageId: `&lt;${id}&gt;`
+});
+
+let receivedAt = 0;
+while (!receivedAt &amp;&amp; Date.now() - sentAt &lt; 60_000) {
+  await imap.noop(); // ask the server to report new messages
+  if (imap.mailbox.exists &gt; 0) {
+    for await (const msg of imap.fetch('1:*', { headers: ['message-id'] })) {
+      if (msg.headers?.toString().includes(id)) receivedAt = Date.now();
+    }
+  }
+  if (!receivedAt) await sleep(250);
+}
+
+await imap.logout();
+console.log(receivedAt ? `TTI: ${(receivedAt - sentAt) / 1000}s` : 'Not received within 60s');</code></pre>
+    <p>Run it from cron or a scheduler every few minutes and send the output to the system you already use for metrics. To compare providers, run one copy per seed mailbox.</p>
+    <p>For a complete, production example, read Forward Email's monitor, <a href="https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js">jobs/tti.js</a>. It tests several providers in parallel, measures direct and forwarded delivery, keeps two IMAP connections open per provider, and emails its team when a delivery is slow. <a href="/forward-email-time-to-inbox/">This page explains how it works</a>.</p>
+
+    <h2 id="tips">Tips for accurate results</h2>
+    <ul>
+      <li><strong>Check the folder.</strong> The example only watches the inbox. A message filed as spam never shows up there, so also watch the spam folder if you want to tell "slow" apart from "filtered".</li>
+      <li><strong>Vary the content a little.</strong> Forward Email's monitor generates random subject lines and body text for each test (<a href="https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js">jobs/tti.js</a>), so the messages do not look like exact duplicates.</li>
+      <li><strong>Keep test volume low.</strong> A test every few minutes per mailbox is enough to spot problems. Postmark runs its TTI checks every five minutes (<a href="https://postmarkapp.com/blog/why-we-removed-inbox-delivery-tests-from-our-status-page">Postmark blog</a>).</li>
+      <li><strong>Report the median and the slow tail.</strong> One slow message can be a one-off retry. A rising median points to a lasting problem.</li>
+    </ul>
+
+    <h2 id="sources">Sources for this page</h2>
+    <ul class="sources">
+      <li><a href="https://www.rfc-editor.org/rfc/rfc5321#section-4.4">RFC 5321, section 4.4: trace information (Received headers)</a></li>
+      <li><a href="https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js">Forward Email: jobs/tti.js</a> and <a href="https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-message.js">helpers/get-message.js</a></li>
+      <li><a href="https://postmarkapp.com/blog/why-we-removed-inbox-delivery-tests-from-our-status-page">Postmark: why we removed inbox delivery tests from our status page</a></li>
+      <li><a href="https://toolbox.googleapps.com/apps/messageheader/">Google Admin Toolbox: Messageheader</a></li>
+    </ul>
+  </div>
+</section>

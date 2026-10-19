@@ -1,0 +1,116 @@
+<!--meta
+{
+  "order": 0,
+  "slug": "",
+  "nav": "Home",
+  "title": "Time to Inbox (TTI): Measure Email Delivery Speed",
+  "ogTitle": "Time to Inbox (TTI): How Fast Email Reaches the Inbox",
+  "description": "Time to inbox (TTI) is how long an email takes to reach the inbox. Learn how to measure it and what slows delivery down.",
+  "h1": "Time to Inbox (TTI): How Fast Email Reaches the Inbox",
+  "lead": "Time to inbox is the time between sending an email and its arrival in the recipient's inbox. These guides explain what it measures, how to measure it yourself, and what slows delivery down.",
+  "heroCtas": "<a class=\"btn btn-primary\" href=\"/what-is-time-to-inbox/\">What is time to inbox</a><a class=\"btn btn-secondary\" href=\"https://forwardemail.net/tti\">See Forward Email's live TTI</a>",
+  "llmsDesc": "Overview of time to inbox, a table of common delay sources with primary sources, and links to every guide."
+}
+-->
+<section class="section" aria-labelledby="what">
+  <div class="container two-col">
+    <div class="prose">
+      <h2 id="what">What is time to inbox?</h2>
+      <p class="answer">Time to inbox (TTI) is the number of seconds between the moment an email is sent and the moment it lands in the recipient's inbox. A healthy TTI is a few seconds. Minutes or hours usually point to a queue, a retry, or a filter on the way.</p>
+      <p>Postmark, which publishes TTI for its own sending, defines it as "the length of time it takes from when an email is sent from a client until it is logged as delivered" (<a href="https://tti.postmarkapp.com/">Postmark TTI page</a>). Forward Email measures the same thing by sending test messages to real mailboxes and timing how long each one takes to show up over IMAP.</p>
+      <p>TTI matters most for email that someone is waiting for:</p>
+      <ul>
+        <li>password reset links and sign-in links</li>
+        <li>one-time codes for two-factor authentication</li>
+        <li>account verification and order confirmation emails</li>
+        <li>monitoring alerts and incident notifications</li>
+        <li>replies in a live conversation or support thread</li>
+      </ul>
+      <p><a href="/what-is-time-to-inbox/">Read the full definition of time to inbox</a>, including how it differs from delivery rate and inbox placement.</p>
+    </div>
+    <figure class="diagram">
+      <img src="/images/tti-pipeline.svg" alt="Diagram: an email goes from send to sending server, receiving server, mailbox and mail app" width="380" height="500">
+      <figcaption>Where the seconds go between send and inbox.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="section section-alt" aria-labelledby="guides">
+  <div class="container">
+    <h2 class="section-title" id="guides">Time to inbox guides</h2>
+    <ul class="cards">
+      <li class="card">
+        <div class="icon"><img src="/images/clock.svg" alt="" width="40" height="40"></div>
+        <h3><a href="/what-is-time-to-inbox/">What is time to inbox</a></h3>
+        <p>The definition, where the clock starts and stops, and how TTI compares with delivery rate, inbox placement and bounce rate.</p>
+      </li>
+      <li class="card">
+        <div class="icon"><img src="/images/chart.svg" alt="" width="40" height="40" loading="lazy" decoding="async"></div>
+        <h3><a href="/how-to-measure-time-to-inbox/">How to measure TTI</a></h3>
+        <p>Read delays from Received headers, or set up seed mailboxes and a script that sends a test email and polls IMAP until it arrives.</p>
+      </li>
+      <li class="card">
+        <div class="icon"><img src="/images/alert.svg" alt="" width="40" height="40" loading="lazy" decoding="async"></div>
+        <h3><a href="/what-affects-email-delivery-speed/">What slows email down</a></h3>
+        <p>Greylisting, retry queues, SPF, DKIM and DMARC, sender reputation, rate limits, forwarding hops and mail apps that fetch on a schedule.</p>
+      </li>
+      <li class="card">
+        <div class="icon"><img src="/images/compare.svg" alt="" width="40" height="40" loading="lazy" decoding="async"></div>
+        <h3><a href="/forward-email-time-to-inbox/">Forward Email's TTI monitor</a></h3>
+        <p>How Forward Email measures direct and forwarded delivery times to Gmail, Apple iCloud, Yahoo/AOL and its own mailboxes, with public source code.</p>
+      </li>
+      <li class="card">
+        <div class="icon"><img src="/images/person.svg" alt="" width="40" height="40" loading="lazy" decoding="async"></div>
+        <h3><a href="/faq/">Time to inbox FAQ</a></h3>
+        <p>Short answers about normal delivery times, delayed verification emails, greylisting, and why one provider can be slower than another.</p>
+      </li>
+      <li class="card">
+        <div class="icon"><img src="/images/check.svg" alt="" width="40" height="40" loading="lazy" decoding="async"></div>
+        <h3><a href="/about/">About TimeToInbox</a></h3>
+        <p>Who runs this site, how to report a mistake, where the source code lives, and what data the site collects (none).</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="delays">
+  <div class="container narrow prose">
+    <h2 id="delays">Common causes of slow delivery, with numbers</h2>
+    <p>Most delays come from a temporary rejection followed by a retry. The retry schedule of the sending server then decides how long the message waits. These figures come from standards and published configuration defaults.</p>
+    <div class="table-wrap">
+      <table>
+        <caption>Delay sources and their documented timings</caption>
+        <thead>
+          <tr><th scope="col">Cause</th><th scope="col">Documented timing</th><th scope="col">Source</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Retry after a temporary failure (any SMTP sender)</td><td>Retry interval "SHOULD be at least 30 minutes"; give up after at least 4 to 5 days</td><td><a href="https://www.rfc-editor.org/rfc/rfc5321#section-4.5.4.1">RFC 5321, section 4.5.4.1</a></td></tr>
+          <tr><td>Postfix deferred queue</td><td>Retries between 300 seconds and 4000 seconds apart; queue scanned every 300 seconds; message returned after 5 days</td><td><a href="https://www.postfix.org/postconf.5.html#minimal_backoff_time">Postfix postconf(5)</a></td></tr>
+          <tr><td>Greylisting at Forward Email</td><td>First message from a new sender is deferred with a 450 code until 5 minutes have passed</td><td><a href="https://forwardemail.net/faq#do-you-have-a-greylist">Forward Email FAQ</a></td></tr>
+          <tr><td>Forward Email TTI alert threshold</td><td>Engineers are emailed when a test delivery takes 10 seconds or longer, or does not arrive</td><td><a href="https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js">jobs/tti.js</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>A message that is greylisted by the receiver and then retried on a 30 minute schedule arrives about 30 minutes late, even though nothing is wrong with it. See <a href="/what-affects-email-delivery-speed/">what affects email delivery speed</a> for each cause and what you can change.</p>
+  </div>
+</section>
+
+<section class="section section-alt" aria-labelledby="fe">
+  <div class="container narrow prose">
+    <h2 id="fe">Forward Email publishes its time to inbox</h2>
+    <p>Forward Email runs a monitor that sends test emails to mailboxes at major email providers and records how long each one takes to arrive. The results are public on the <a href="https://forwardemail.net/tti">Forward Email time to inbox page</a>, with a 24-hour chart, and the code that produces them is <a href="https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js">public on GitHub</a>.</p>
+    <p>Each run measures two paths per provider: a direct message, and a message sent through a forwarding address that ends up in the same mailbox. The numbers change with every test run, so this site links to the live page instead of copying values that would go stale.</p>
+    <p><a class="card-link" href="/forward-email-time-to-inbox/">Read how the Forward Email TTI monitor works</a></p>
+  </div>
+</section>
+
+<section class="cta" aria-labelledby="cta">
+  <div class="container">
+    <h2 id="cta">Email from the team that publishes its TTI</h2>
+    <p>Forward Email is open-source email hosting and forwarding with IMAP, POP3, SMTP, CalDAV and CardDAV support. Its free plan forwards email for your domain once you add MX and TXT DNS records, with no account needed.</p>
+    <div class="cta-buttons">
+      <a class="btn btn-primary" href="https://forwardemail.net">Get started with Forward Email</a>
+      <a class="btn btn-secondary" href="https://forwardemail.net/tti">View live TTI results</a>
+    </div>
+  </div>
+</section>
